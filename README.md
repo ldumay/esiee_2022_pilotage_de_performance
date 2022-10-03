@@ -7,11 +7,19 @@
 
 ## Pré-requis
 
-JDK 11 
+### Net Tools
+
+```
+apt install net-tools
+```
+
+### JDK 11 
 
 ```
 sudo apt install openjdk-11-jre-headless
 ```
+
+![img](_img/001.png)
 
 Vérification de JDK
 
@@ -21,6 +29,8 @@ openjdk 11.0.16 2022-07-19
 OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu122.04)
 OpenJDK 64-Bit Server VM (build 11.0.16+8-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)
 ```
+
+## TP - 1
 
 Clone du git
 
@@ -39,3 +49,10 @@ Démarrage du projet avec Maven
 ```
 ./mvnw clean spring-boot:run
 ```
+
+Changer le port pour `8081`
+```
+nano src/main/resources/application.properties
+```
+
+![img](_img/002.png)

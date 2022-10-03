@@ -1,4 +1,4 @@
-# TP - 1 - JPetStore
+# ESIEE - 2022 - Pilotage de performance
 
 
 ## Github du prjet :

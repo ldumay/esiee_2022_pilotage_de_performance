@@ -50,9 +50,20 @@ Démarrage du projet avec Maven
 ./mvnw clean spring-boot:run
 ```
 
+Accès par : 
+
+- [http://locahost:8080/](http://locahost:8080/)
+- [http://172.16.202.226:8080/](http://172.16.202.226:8080/)
+
 Changer le port pour `8081`
+
 ```
 nano src/main/resources/application.properties
 ```
 
 ![img](_img/002.png)
+
+Accès par : 
+
+- [http://locahost:8081/](http://locahost:8081/)
+- [http://172.16.202.226:8081/](http://172.16.202.226:8081/)

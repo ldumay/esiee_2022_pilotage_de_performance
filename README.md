@@ -1,7 +1,8 @@
 # ESIEE - 2022 - Pilotage de performance
 
+Ce projet a été testé sur une machine virtuel **Ubuntu 22.04** sous **VirtualBox**.
 
-## Github du prjet :
+## Github du projet :
 
 [github - mybatis-spring-boot-jpetstore](https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore)
 
@@ -13,13 +14,15 @@
 apt install net-tools
 ```
 
+Permet de faire plein de chose, comme `ifconfig` 😉
+
+![img](_img/001.png)
+
 ### JDK 11 
 
 ```
 sudo apt install openjdk-11-jre-headless
 ```
-
-![img](_img/001.png)
 
 Vérification de JDK
 
@@ -30,7 +33,9 @@ OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu122.04)
 OpenJDK 64-Bit Server VM (build 11.0.16+8-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)
 ```
 
-## TP - 1
+## TP - 1 - Installation d'une application Java JEE
+
+### Clone & Run
 
 Clone du git
 
@@ -49,6 +54,8 @@ Démarrage du projet avec Maven
 ```
 ./mvnw clean spring-boot:run
 ```
+
+### Accés via `localhost` et `ip`
 
 Accès par : 
 

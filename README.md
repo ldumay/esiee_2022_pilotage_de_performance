@@ -7,10 +7,19 @@
 
 ## Pré-requis
 
-JDK 8 
+JDK 11 
 
 ```
-sudo apt install openjdk-8-jre-headless
+sudo apt install openjdk-11-jre-headless
+```
+
+Vérification de JDK
+
+```
+> java --version
+openjdk 11.0.16 2022-07-19
+OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu122.04)
+OpenJDK 64-Bit Server VM (build 11.0.16+8-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)
 ```
 
 Clone du git

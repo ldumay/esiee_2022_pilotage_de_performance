@@ -150,12 +150,13 @@ sudo systemctl restart apache2.service
 
 ```xml
 <VirtualHost *:80>
-Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path/" env=BALANCER_ROUTE_CHANGED
+Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
 ProxyRequests Off
 ProxyPreserveHost On
 <Proxy "balancer://mycluster">
-    BalancerMemeber "http://192.168.1.43:8081" route=1
-    BalancerMemeber "http://192.168.1.43:8082" route=2
+    BalancerMember "http://192.168.1.43:8081" route=1
+            #attention: il faut changer les IPs et vérifier les ports
+    BalancerMember "http://192.168.1.43:8082" route=2
     ProxySet stickysession=ROUTEID
 </Proxy>
 ProxyPass "/" "balancer://mycluster/"

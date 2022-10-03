@@ -147,3 +147,18 @@ sudo a2enmod headers
 sudo a2enmod lbmethod_byrequests
 sudo systemctl restart apache2.service
 ```
+
+```xml
+<VirtualHost *:80>
+Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path/" env=BALANCER_ROUTE_CHANGED
+ProxyRequests Off
+ProxyPreserveHost On
+<Proxy "balancer://mycluster">
+    BalancerMemeber "http://192.168.1.43:8081" route=1
+    BalancerMemeber "http://192.168.1.43:8082" route=2
+    ProxySet stickysession=ROUTEID
+</Proxy>
+ProxyPass "/" "balancer://mycluster/"
+ProxyPassReverse "/" "balancer://mycluster/"
+</VirtualHost>
+```

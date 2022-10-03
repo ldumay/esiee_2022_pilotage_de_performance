@@ -117,6 +117,33 @@ Modifier la configuration du datasource Sring
 spring.datasource.url=jdbc:hsqldb:file:false
 ```
 
-### 3.4 - LoadBalancer
 
-dss
+**----------------[EN COURS - NON TESTER]----------------**
+
+Compilation en jar
+
+```
+./mvnw clean package -DskipTests=true
+```
+
+```
+nohup java -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar
+nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar
+```
+
+### 3.2 - LoadBalancer
+
+```
+sudo systemctl enable apache2
+sudo systemctl start apache2.service
+sudo systemctl status apache2.service
+```
+
+```
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo a2enmod proxy_balancer
+sudo a2enmod headers
+sudo a2enmod lbmethod_byrequests
+sudo systemctl restart apache2.service
+```

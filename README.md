@@ -2,9 +2,9 @@
 
 Ce projet a été testé sur une machine virtuel **Ubuntu 22.04** sous **VirtualBox**.
 
-## Github du projet :
+Le but de celui-ci est de **déployer**, **monitorer** et **tester** plusieurs applications sur un serveur.
 
-[github - mybatis-spring-boot-jpetstore](https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore)
+L'application de démonstration utilisé est disponible ici : [github - mybatis-spring-boot-jpetstore](https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore).
 
 ## 1 - Pré-requis
 
@@ -139,7 +139,9 @@ cd apps/jpetstore_1/
 
 > Ramplacer `jpetstore_1` par le dossier de l'application cible.
 
-### 3.2 - LoadBalancer
+### 3.2 - Préparation d'un LoadBalancer avec Apache
+
+#### 3.2.1 - Installation de Apache
 
 Installer Apache :
 
@@ -161,7 +163,7 @@ sudo a2enmod lbmethod_byrequests
 sudo systemctl restart apache2.service
 ```
 
-#### 3.2.1  Configuration de Apache
+#### 3.2.2 - Configuration de Apache
 
 Récupérer l'ip de la machine :
 
@@ -208,7 +210,7 @@ Vérifier la bonne écriture et le contenu du fichier avec :
 cat /etc/apache2/conf-enabled/jpetstore.conf
 ```
 
-#### 3.2.2  Lancement de plusieurs applications
+### 3.3 - Lancement de plusieurs applications
 
 Préparer les fichiers de logs des applications.
 
@@ -261,9 +263,17 @@ Refaite la même chose pour la 2e applications.
 > nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
 > ```
 
+### 3.4 - Finis - Je check 😉
+
 Normalement, si tout est **OK**, il devrais avoir 2 instance java actifs. Pour vérifier, faite la commande `top`. Celle-ci ouvre le monteur d'acivité en console. Pour le fermer, faite `CTRL`+ `C`.
 
-Pourlire les logs de chaque applications en temps réel, faite : 
+![img](_img/004.png)
+
+> Sur la capture, les 2 applications java sont d'ids **2444** et **3538**.
+
+### 3.5 - Lecture des logs
+
+Pour lire les logs de chaque applications en temps réel, faite : 
 
 ```
 tail -f apps/logs/jpetstore_1.logs
@@ -274,3 +284,10 @@ tail -f apps/logs/jpetstore_2.logs
 ```
 
 Pour le fermer, faite `CTRL`+ `C`.
+
+### 3.6 - Accessibilité
+
+- jpetstore_1 : [http://172.16.202.151:8081/](http://172.16.202.151:8081/)
+- jpetstore_2 : [http://172.16.202.151:8082/](http://172.16.202.151:8082/)
+
+## 4 - TP - 2 - 

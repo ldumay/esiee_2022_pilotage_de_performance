@@ -414,3 +414,25 @@ tar -xzvf elasticsearch-7.16.3-linux-x86_64.tar.gz
 tar -xzvf kibana-7.16.3-linux-x86_64.tar.gz
 tar -xzvf apm-server-7.16.3-linux-x86_64.tar.gz
 ```
+
+Nettoyage des fichier compresser :
+
+```
+rm -r apm-server-7.16.3-linux-x86_64.tar.gz
+rm -r kibana-7.16.3-linux-x86_64.tar.gz
+rm -r elasticsearch-7.16.3-linux-x86_64.tar.gz
+```
+
+Résultat :
+
+```
+> ls -ali
+
+total 9216
+ 792723 drwxrwxr-x  5 ldumay ldumay    4096 oct.   4 15:07 .
+ 412595 drwxr-x--- 22 ldumay ldumay    4096 oct.   4 14:50 ..
+ 925413 drwxrwxr-x  3 ldumay ldumay    4096 oct.   4 14:59 apm-server-7.16.3-linux-x86_64
+ 792740 -rw-rw-r--  1 ldumay ldumay 9414402 févr.  9  2022 elastic-apm-agent-1.29.0.jar
+1053274 drwxr-xr-x  9 ldumay ldumay    4096 janv.  7  2022 elasticsearch-7.16.3
+1054390 drwxrwxr-x 10 ldumay ldumay    4096 oct.   4 15:03 kibana-7.16.3-linux-x86_64
+```

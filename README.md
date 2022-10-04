@@ -436,3 +436,28 @@ total 9216
 1053274 drwxr-xr-x  9 ldumay ldumay    4096 janv.  7  2022 elasticsearch-7.16.3
 1054390 drwxrwxr-x 10 ldumay ldumay    4096 oct.   4 15:03 kibana-7.16.3-linux-x86_64
 ```
+
+Petit retrie des applications et de l'agent de monitoring dans 2 dossiers distincts :
+
+- dossier des applications de monitoring : `monitor`
+- dossier des agents de monitoring : `monitor-agents`
+
+```
+cd ../
+mkdir monitor
+mkdir monitor-agents
+mv dl/apm-server-7.16.3-linux-x86_64/ monitor/apm-server-7.16.3-linux-x86_64/
+mv dl/elasticsearch-7.16.3/ monitor/elasticsearch-7.16.3/
+mv dl/kibana-7.16.3-linux-x86_64/ monitor/kibana-7.16.3-linux-x86_64/
+mv dl/elastic-apm-agent-1.29.0.jar monitor-agents/elastic-apm-agent-1.29.0.jar
+```
+
+Résultat :
+
+```
+ldumay@ldumay-vm:~$ ls monitor
+apm-server-7.16.3-linux-x86_64  elasticsearch-7.16.3  kibana-7.16.3-linux-x86_64
+
+ldumay@ldumay-vm:~$ ls monitor-agents/
+elastic-apm-agent-1.29.0.jar
+```

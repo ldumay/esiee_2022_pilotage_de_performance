@@ -25,7 +25,7 @@ L'application de démonstration utilisé est disponible ici : [github - mybatis-
     - [3.4 - Finis - Je check 😉]()
     - [3.5 - Lecture des logs de apache]()
     - [3.6 - Lecture des logs des applications]()
-    - [3.7 - Accessibilité](#accessibilite)
+    - [3.7 - Accessibilité](#3-7)
 - [4 - TP - 2 - ]()
 
 ## 1 - Pré-requis <a name="pre-requis"></a>
@@ -370,7 +370,7 @@ tail -f apps/logs/jpetstore_2.logs
 
 Pour le fermer, faite `CTRL`+ `C`.
 
-### 3.7 - Accessibilité <a name="accessibilite"></a>
+### 3.7 - Accessibilité <a name="3-7"></a>
 
 Le service est donc acessible à l'adresse du serveur, ici [http://172.16.202.151](http://172.16.202.151), qui va lui même se charger de redirriger vers l'appplication **jpetstore_1 / port:8081** ou **jpetstore_2 / port:8081**.
 

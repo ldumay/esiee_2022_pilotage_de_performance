@@ -263,10 +263,6 @@ Refaite la même chose pour la 2e applications.
 
 Normalement, si tout est **OK**, il devrais avoir 2 instance java actifs. Pour vérifier, faite la commande `top`. Celle-ci ouvre le monteur d'acivité en console. Pour le fermer, faite `CTRL`+ `C`.
 
-```
-
-```
-
 Pourlire les logs de chaque applications en temps réel, faite : 
 
 ```

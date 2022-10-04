@@ -461,3 +461,125 @@ apm-server-7.16.3-linux-x86_64  elasticsearch-7.16.3  kibana-7.16.3-linux-x86_64
 ldumay@ldumay-vm:~$ ls monitor-agents/
 elastic-apm-agent-1.29.0.jar
 ```
+
+Configuration de Elasticsearch
+
+```
+sudo nano monitor/elasticsearch-7.16.3/config/elasticsearch.yml
+```
+
+Résultat
+
+![img](_img/007.png)
+
+> Configurer avec :
+> - `network.host: 172.16.202.151`
+> - `discovery.type: single-node`
+
+Configuration de Kibana
+
+```
+sudo nano monitor/kibana-7.16.3-linux-x86_64/config/kibana.yml
+```
+
+Résultat
+
+![img](_img/008.png)
+
+> Configurer avec :
+> - `server.host: 0.0.0.0`
+> - `elasticsearch.hosts: http://172.16.202.151:9200/`
+
+
+Configuration de APM Serveur
+
+```
+sudo nano monitor/apm-server-7.16.3-linux-x86_64/apm-server.yml
+```
+
+Résultat
+
+![img](_img/009.png)
+
+![img](_img/010.png)
+
+> Configurer avec :
+> - `host: 0.0.0.0:8200`
+> - `hosts: 172.16.202.151:9200`
+
+Configuration de `systctl.conf`
+
+```
+sudo nano /etc/sysctl.conf
+```
+
+![img](_img/011.png)
+
+> Configurer avec :
+> - `vm.max_map_count = 262144`
+
+> NB : 
+>
+> Il est possible de faire cela avec une commande :
+>
+> ```
+> systctl -w vm.max_map_count = 262144
+> ```
+
+Rechargher la configuration
+
+```
+sudo sysctl -p
+```
+
+Créationd des fichiers de logs pour les applications :
+
+```
+mkdir monitor/logs
+touch monitor/logs/elasticsearch.logs
+touch monitor/logs/kibana.logs
+touch monitor/logs/apm_server.logs
+```
+
+Résultat :
+
+```
+> tree monitor/logs/
+
+monitor/logs/
+├── apm_server.logs
+├── elasticsearch.logs
+└── kibana.logs
+
+0 directories, 3 files
+```
+
+Démarrage des applications :
+
+```
+cd monitor/elasticsearch-7.16.3/
+./bin/elasticsearch > monitor/logs/elasticsearch.logs &
+
+cd ../kibana-7.16.3-linux-x86_64/
+./bin/kibana > monitor/logs/kibana.logs &
+
+cd ../apm-server-7.16.3-linux-x86_64/
+./apm-server -e > monitor/logs/apm_server.logs &
+
+```
+
+---
+
+```
+nohup java -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_1.logs &
+nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
+./monitor/elasticsearch-7.16.3/bin/elasticsearch > monitor/logs/elasticsearch.logs &
+./monitor/kibana-7.16.3-linux-x86_64/bin/kibana > monitor/logs/kibana.logs &
+./monitor/apm-server-7.16.3-linux-x86_64/apm-server > monitor/logs/apm_server.logs &
+```
+
+[1] 2746
+[2] 2747
+[3] 2835
+[4] 3074
+[5] 3075

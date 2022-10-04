@@ -645,7 +645,12 @@ Accès au applications
 #### Résultat de APM Serveur
 
 ```
-
+{
+  "build_date": "2022-01-06T23:27:35Z",
+  "build_sha": "fde0af4fa2b9f39e518b333c5be56cf8be215ca0",
+  "publish_ready": true,
+  "version": "7.16.3"
+}
 ```
 
 #### Résultat de Kibana

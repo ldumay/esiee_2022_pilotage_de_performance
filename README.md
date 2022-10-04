@@ -1,4 +1,4 @@
-# ESIEE - 2022 - Pilotage de performance
+# ESIEE - 2022 - Pilotage de performance <a name="top"></a>
 
 Ce projet a été testé sur une machine virtuel **Ubuntu 22.04** sous **VirtualBox**.
 
@@ -8,36 +8,36 @@ L'application de démonstration utilisé est disponible ici : [github - mybatis-
 
 ## Sommaire
 
-- [1 - Pré-requis](#pre-requis)
-    - [1.1 - Mise à jour et outils utils]()
-    - [1.2 - Net Tools]()
-    - [1.3 - JDK 11]()
-    - [1.4 - Configuration réseau]()
-- [2 - TP - 1 - Installation d'une application Java JEE]()
-    - [2.1 - Clone & Run]()
-    - [2.2 - Accés via *localhost* et *`*ip*]()
-- [3 - TP - 2 - Configuration de 2 JPetStore avec LoadBalancer]()
-    - [3.1 - Configuration de 2 JPetStore]()
-    - [3.2 - Préparation d'un LoadBalancer avec Apache]()
-        - [3.2.1 - Installation de Apache]()
-        - [3.2.2 - Configuration de Apache]()
-    - [3.3 - Lancement de plusieurs applications]()
-    - [3.4 - Finis - Je check 😉]()
-    - [3.5 - Lecture des logs de apache]()
-    - [3.6 - Lecture des logs des applications]()
+- [1 - Pré-requis](#1)
+    - [1.1 - Mise à jour et outils utils](#1-1)
+    - [1.2 - Net Tools](#1-2)
+    - [1.3 - JDK 11](#1-3)
+    - [1.4 - Configuration réseau](#1-4)
+- [2 - TP - 1 - Installation d'une application Java JEE](#2)
+    - [2.1 - Clone & Run](#2-1)
+    - [2.2 - Accés via *localhost* et *`*ip*](#2-2)
+- [3 - TP - 2 - Configuration de 2 JPetStore avec LoadBalancer](#3)
+    - [3.1 - Configuration de 2 JPetStore](#3-1)
+    - [3.2 - Préparation d'un LoadBalancer avec Apache](#3-2)
+        - [3.2.1 - Installation de Apache](#3-2-1)
+        - [3.2.2 - Configuration de Apache](#3-2-2)
+    - [3.3 - Lancement de plusieurs applications](#3-3)
+    - [3.4 - Finis - Je check 😉](#3-4)
+    - [3.5 - Lecture des logs de apache](#3-5)
+    - [3.6 - Lecture des logs des applications](#3-6)
     - [3.7 - Accessibilité](#3-7)
 - [4 - TP - 2 - ]()
 
-## 1 - Pré-requis <a name="pre-requis"></a>
+## 1 - Pré-requis - [Haut de page](#top) <a name="1"></a>
 
-### 1.1 - Mise à jour et outils utils
+### 1.1 - Mise à jour et outils utils - [Haut de page](#top) <a name="1-1"></a>
 
 ```
 sudo apt update && apt upgrade
 sudo apt install tree htop
 ```
 
-### 1.2 - Net Tools
+### 1.2 - Net Tools - [Haut de page](#top) <a name="1-2"></a>
 
 ```
 sudo apt install net-tools
@@ -47,7 +47,7 @@ Permet de faire plein de chose, comme `ifconfig` 😉
 
 ![img](_img/001.png)
 
-### 1.3 - JDK 11 
+### 1.3 - JDK 11 - [Haut de page](#top) <a name="1-3"></a>
 
 ```
 sudo apt install openjdk-11-jre-headless
@@ -62,15 +62,15 @@ OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu122.04)
 OpenJDK 64-Bit Server VM (build 11.0.16+8-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)
 ```
 
-### 1.4 - Configuration réseau (Si Ubuntu en VM)
+### 1.4 - Configuration réseau (Si Ubuntu en VM) - [Haut de page](#top) <a name="1-4"></a>
 
 ![img](_img/003.png)
 
 Sélectionné le nom de la carte réseau principal de la machine utilisant VirtualBox (ou VMWare ... ou ce que tu veux 😉 )
 
-## 2 - TP - 1 - Installation d'une application Java JEE
+## 2 - TP - 1 - Installation d'une application Java JEE - [Haut de page](#top) <a name="2"></a>
 
-### 2.1 - Clone & Run
+### 2.1 - Clone & Run - [Haut de page](#top) <a name="2-1"></a>
 
 Cloner le projet jpetstore stocker sur git :
 
@@ -90,7 +90,7 @@ Démarrage du projet avec Maven :
 ./mvnw clean spring-boot:run
 ```
 
-### 2.2 - Accés via `localhost` et `ip`
+### 2.2 - Accés via `localhost` et `ip` - [Haut de page](#top) <a name="2-2"></a>
 
 Accès par : 
 
@@ -110,9 +110,9 @@ Accès par :
 - [http://locahost:8081/](http://locahost:8081/)
 - [http://172.16.202.226:8081/](http://172.16.202.226:8081/)
 
-## 3 - TP - 2 - Configuration de 2 JPetStore avec LoadBalancer
+## 3 - TP - 2 - Configuration de 2 JPetStore avec LoadBalancer - [Haut de page](#top) <a name="3"></a>
 
-### 3.1 - Configuration de 2 JPetStore
+### 3.1 - Configuration de 2 JPetStore - [Haut de page](#top) <a name="3-1"></a>
 
 1. Avoir 2 instances de JPetStore
 2. Changé les ports de chaque applications pour :
@@ -161,9 +161,9 @@ cd apps/jpetstore_1/
 
 > Ramplacer `jpetstore_1` par le dossier de l'application cible.
 
-### 3.2 - Préparation d'un LoadBalancer avec Apache
+### 3.2 - Préparation d'un LoadBalancer avec Apache - [Haut de page](#top) <a name="3-2"></a>
 
-#### 3.2.1 - Installation de Apache
+#### 3.2.1 - Installation de Apache - [Haut de page](#top) <a name="3-2-1"></a>
 
 Installer Apache :
 
@@ -185,7 +185,7 @@ sudo a2enmod lbmethod_byrequests
 sudo systemctl restart apache2.service
 ```
 
-#### 3.2.2 - Configuration de Apache
+#### 3.2.2 - Configuration de Apache - [Haut de page](#top) <a name="3-2-2"></a>
 
 Récupérer l'ip de la machine :
 
@@ -286,7 +286,7 @@ systemctl reload apache2
 ```
 
 
-### 3.3 - Lancement de plusieurs applications
+### 3.3 - Lancement de plusieurs applications - [Haut de page](#top) <a name="3-3"></a>
 
 Préparer les fichiers de logs des applications.
 
@@ -339,7 +339,7 @@ Refaite la même chose pour la 2e applications.
 > nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
 > ```
 
-### 3.4 - Finis - Je check 😉
+### 3.4 - Finis - Je check 😉 - [Haut de page](#top) <a name="3-4"></a>
 
 Normalement, si tout est **OK**, il devrais avoir 2 instance java actifs. Pour vérifier, faite la commande `top`. Celle-ci ouvre le monteur d'acivité en console. Pour le fermer, faite `CTRL`+ `C`.
 
@@ -347,7 +347,7 @@ Normalement, si tout est **OK**, il devrais avoir 2 instance java actifs. Pour v
 
 > Sur la capture, les 2 applications java sont d'ids **2444** et **3538**.
 
-### 3.5 - Lecture des logs de apache
+### 3.5 - Lecture des logs de apache - [Haut de page](#top) <a name="3-5"></a>
 
 Pour lire les logs de apache.
 
@@ -356,7 +356,7 @@ cat /var/log/apache2/error.log
 cat /var/log/apache2/access.log
 ```
 
-### 3.6 - Lecture des logs des applications
+### 3.6 - Lecture des logs des applications - [Haut de page](#top) <a name="3-6"></a>
 
 Pour lire les logs de chaque applications en temps réel, faite : 
 
@@ -370,7 +370,7 @@ tail -f apps/logs/jpetstore_2.logs
 
 Pour le fermer, faite `CTRL`+ `C`.
 
-### 3.7 - Accessibilité <a name="3-7"></a>
+### 3.7 - Accessibilité - [Haut de page](#top) <a name="3-7"></a>
 
 Le service est donc acessible à l'adresse du serveur, ici [http://172.16.202.151](http://172.16.202.151), qui va lui même se charger de redirriger vers l'appplication **jpetstore_1 / port:8081** ou **jpetstore_2 / port:8081**.
 

@@ -127,7 +127,7 @@ nano apps/jpetstore_2/src/main/resources/application.properties
 Modifier la configuration du datasource Sring :
 
 ```
-spring.datasource.url=jdbc:hsqldb:file:false
+spring.datasource.url=jdbc:hsqldb:file:~/db/jpetstore;hsqldb.lock_file=false
 ```
 
 Compiler chaque projet en jar :
@@ -350,7 +350,6 @@ Pour le fermer, faite `CTRL`+ `C`.
 
 ### 3.7 - Accessibilité
 
-- jpetstore_1 : [http://172.16.202.151:8081/](http://172.16.202.151:8081/)
-- jpetstore_2 : [http://172.16.202.151:8082/](http://172.16.202.151:8082/)
+Le service est donc acessible à l'adresse du serveur, ici [http://172.16.202.151](http://172.16.202.151), qui va lui même se charger de redirriger vers l'appplication **jpetstore_1 / port:8081** ou **jpetstore_2 / port:8081**.
 
 ## 4 - TP - 2 - 

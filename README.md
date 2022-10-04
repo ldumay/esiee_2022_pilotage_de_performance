@@ -6,7 +6,29 @@ Le but de celui-ci est de **déployer**, **monitorer** et **tester** plusieurs a
 
 L'application de démonstration utilisé est disponible ici : [github - mybatis-spring-boot-jpetstore](https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore).
 
-## 1 - Pré-requis
+## Sommaire
+
+- [1 - Pré-requis](#pre-requis)
+    - [1.1 - Mise à jour et outils utils]()
+    - [1.2 - Net Tools]()
+    - [1.3 - JDK 11]()
+    - [1.4 - Configuration réseau]()
+- [2 - TP - 1 - Installation d'une application Java JEE]()
+    - [2.1 - Clone & Run]()
+    - [2.2 - Accés via *localhost* et *`*ip*]()
+- [3 - TP - 2 - Configuration de 2 JPetStore avec LoadBalancer]()
+    - [3.1 - Configuration de 2 JPetStore]()
+    - [3.2 - Préparation d'un LoadBalancer avec Apache]()
+        - [3.2.1 - Installation de Apache]()
+        - [3.2.2 - Configuration de Apache]()
+    - [3.3 - Lancement de plusieurs applications]()
+    - [3.4 - Finis - Je check 😉]()
+    - [3.5 - Lecture des logs de apache]()
+    - [3.6 - Lecture des logs des applications]()
+    - [3.7 - Accessibilité](#accessibilite)
+- [4 - TP - 2 - ]()
+
+## 1 - Pré-requis <a name="pre-requis"></a>
 
 ### 1.1 - Mise à jour et outils utils
 
@@ -40,7 +62,7 @@ OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu122.04)
 OpenJDK 64-Bit Server VM (build 11.0.16+8-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)
 ```
 
-### 1.4 - Si Ubuntu en VM - Configuration réseau
+### 1.4 - Configuration réseau (Si Ubuntu en VM)
 
 ![img](_img/003.png)
 
@@ -348,7 +370,7 @@ tail -f apps/logs/jpetstore_2.logs
 
 Pour le fermer, faite `CTRL`+ `C`.
 
-### 3.7 - Accessibilité
+### 3.7 - Accessibilité <a name="accessibilite"></a>
 
 Le service est donc acessible à l'adresse du serveur, ici [http://172.16.202.151](http://172.16.202.151), qui va lui même se charger de redirriger vers l'appplication **jpetstore_1 / port:8081** ou **jpetstore_2 / port:8081**.
 

@@ -123,19 +123,20 @@ Modifier la configuration du datasource Sring
 spring.datasource.url=jdbc:hsqldb:file:false
 ```
 
-
-**----------------[EN COURS - NON TESTER]----------------**
-
-Compilation chaque projet en jar
+Compiler chaque projet en jar
 
 ```
 ./mvnw clean package -DskipTests=true
 ```
 
+Lancer chaque projet indépendemment
+
 ```
 nohup java -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar
 nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar
 ```
+
+> **ATTENTION** : je ne coonnais pa trop la commande `nohup` du je ne sais pas si c'est bien fonctionnel pour le moment, je dois revenir dessus bientôt. 😉
 
 ### 3.2 - LoadBalancer
 
@@ -159,6 +160,7 @@ sudo a2enmod lbmethod_byrequests
 sudo systemctl restart apache2.service
 ```
 
+Configuration de Apache
 ```xml
 <VirtualHost *:80>
 Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED

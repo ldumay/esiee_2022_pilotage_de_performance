@@ -254,3 +254,27 @@ ldumay@ldumay-vm:~$
 ```
 
 Refaite la même chose pour la 2e applications.
+
+> Je sympas, voilà commande pour jpetstore_2 :
+> 
+> ```
+> nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
+> ```
+
+Normalement, si tout est **OK**, il devrais avoir 2 instance java actifs. Pour vérifier, faite la commande `top`. Celle-ci ouvre le monteur d'acivité en console. Pour le fermer, faite `CTRL`+ `C`.
+
+```
+
+```
+
+Pourlire les logs de chaque applications en temps réel, faite : 
+
+```
+tail -f apps/logs/jpetstore_1.logs
+
+OU
+
+tail -f apps/logs/jpetstore_2.logs
+```
+
+Pour le fermer, faite `CTRL`+ `C`.

@@ -124,7 +124,7 @@ nano apps/jpetstore_1/src/main/resources/application.properties
 nano apps/jpetstore_2/src/main/resources/application.properties
 ```
 
-Modifier la configuration du datasource Sring :
+Modifier la configuration du datasource Spring :
 
 ```
 spring.datasource.url=jdbc:hsqldb:file:~/db/jpetstore;hsqldb.lock_file=false

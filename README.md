@@ -12,7 +12,7 @@ L'application de démonstration utilisé est disponible ici : [github - mybatis-
 
 ```
 sudo apt update && apt upgrade
-sudo apt install tree
+sudo apt install tree htop
 ```
 
 ### 1.2 - Net Tools
@@ -183,32 +183,86 @@ enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 Créer et éditer un fichier de configuration de **vhost** pour les application jpetstore que l'on appellera `jpetstore.conf`.
 
 ```
-sudo nano /etc/apache2/conf-enabled/jpetstore.conf
+sudo nano /etc/apache2/sites-available/jpetstore.conf
 ```
 
 Ci-dessous, le contenu du ficher `jpetstore.conf`.
 
 ```xml
 <VirtualHost *:80>
-Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
-ProxyRequests Off
-ProxyPreserveHost On
-<Proxy "balancer://mycluster">
-    BalancerMember "http://172.16.202.151:8081" route=1
-            #attention: il faut changer les IPs et vérifier les ports
-    BalancerMember "http://172.16.202.151:8082" route=2
-    ProxySet stickysession=ROUTEID
-</Proxy>
-ProxyPass "/" "balancer://mycluster/"
-ProxyPassReverse "/" "balancer://mycluster/"
+    Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+    ProxyRequests Off
+    ProxyPreserveHost On
+
+    <Proxy "balancer://mycluster">
+        BalancerMember "http://172.16.202.151:8081" route=1
+                #attention: il faut changer les IPs et vérifier les ports
+        BalancerMember "http://172.16.202.151:8082" route=2
+        ProxySet stickysession=ROUTEID
+    </Proxy>
+
+    ProxyPass "/" "balancer://mycluster/"
+    ProxyPassReverse "/" "balancer://mycluster/"
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
 
 Vérifier la bonne écriture et le contenu du fichier avec :
 
 ```
-cat /etc/apache2/conf-enabled/jpetstore.conf
+cat /etc/apache2/sites-available/jpetstore.conf
 ```
+
+Désactiver le site par défaut d'apache.
+
+```
+sudo nano /etc/apache2/apache2.conf
+```
+
+> Avant :
+> 
+> ![img](_img/005.png)
+
+> Après
+> 
+> ![img](_img/006.png)
+
+Désactiver la configuration par défaut de apache :
+
+```
+sudo a2dissite
+Your choices are: 000-default jpetstore
+Which site(s) do you want to disable (wildcards ok)?
+000-default
+Site 000-default disabled.
+To activate the new configuration, you need to run:
+  systemctl reload apache2
+```
+> ▶ `000-default`
+
+Activer la configuration `jpetstore.conf`. 
+
+```
+sudo a2ensite
+
+Your choices are: 000-default default-ssl jpetstore
+Which site(s) do you want to enable (wildcards ok)?
+jpetstore
+Enabling site jpetstore.
+To activate the new configuration, you need to run:
+  systemctl reload apache2
+```
+
+> ▶ `jpetstore`
+
+Redémarrer apache.
+
+```
+systemctl reload apache2
+```
+
 
 ### 3.3 - Lancement de plusieurs applications
 
@@ -271,7 +325,16 @@ Normalement, si tout est **OK**, il devrais avoir 2 instance java actifs. Pour v
 
 > Sur la capture, les 2 applications java sont d'ids **2444** et **3538**.
 
-### 3.5 - Lecture des logs
+### 3.5 - Lecture des logs de apache
+
+Pour lire les logs de apache.
+
+```
+cat /var/log/apache2/error.log
+cat /var/log/apache2/access.log
+```
+
+### 3.6 - Lecture des logs des applications
 
 Pour lire les logs de chaque applications en temps réel, faite : 
 
@@ -285,7 +348,7 @@ tail -f apps/logs/jpetstore_2.logs
 
 Pour le fermer, faite `CTRL`+ `C`.
 
-### 3.6 - Accessibilité
+### 3.7 - Accessibilité
 
 - jpetstore_1 : [http://172.16.202.151:8081/](http://172.16.202.151:8081/)
 - jpetstore_2 : [http://172.16.202.151:8082/](http://172.16.202.151:8082/)

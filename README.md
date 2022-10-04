@@ -375,3 +375,42 @@ Pour le fermer, faite `CTRL`+ `C`.
 Le service est donc acessible à l'adresse du serveur, ici [http://172.16.202.151](http://172.16.202.151), qui va lui même se charger de redirriger vers l'appplication **jpetstore_1 / port:8081** ou **jpetstore_2 / port:8081**.
 
 ## 4 - TP - 2 -  - [Haut de page](#top) <a name="4"></a>
+
+Créer un dossier de téléchagement temporaire.
+
+```
+mkdir dl
+cd dl
+```
+
+Elasticsearch : 
+
+```
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3-linux-x86_64.tar.gz
+```
+
+Kibana : 
+
+```
+wget https://artifacts.elastic.co/downloads/kibana/kibana-7.16.3-linux-x86_64.tar.gz
+```
+
+APM Server :
+
+```
+wget https://artifacts.elastic.co/downloads/apm-server/apm-server-7.16.3-linux-x86_64.tar.gz
+```
+
+APM Agent : 
+```
+wget https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.29.0/elastic-apm-agent-1.29.0.jar
+mv 'remotecontent?filepath=co%2Felastic%2Fapm%2Felastic-apm-agent%2F1.29.0%2Felastic-apm-agent-1.29.0.jar' elastic-apm-agent-1.29.0.jar
+```
+
+Décompression des fichiers :
+
+```
+tar -xzvf elasticsearch-7.16.3-linux-x86_64.tar.gz
+tar -xzvf kibana-7.16.3-linux-x86_64.tar.gz
+tar -xzvf apm-server-7.16.3-linux-x86_64.tar.gz
+```

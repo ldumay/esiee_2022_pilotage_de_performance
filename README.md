@@ -591,12 +591,16 @@ cd monitor/apm-server-7.16.3-linux-x86_64/
 
 ### 🚀 - Démarrage de toutes les applications - [Haut de page](#top) <a name="full"></a>
 
+Pour être sûr, redémarrer ubuntu afin de lâcher (éteindre) chaque toutes applications génantes.
+
+On va démarrer les **jpetstore 1 et 2**, **elasticsearch**, **kibana** et **apm-server**.
+
 ```
-nohup java -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_1.logs &
-nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
+nohup java -javaagent:/home/ldumay/monitor-agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=JpetStore_1 -Delastic.apm.server_url='http://172.16.202.151:8200' -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_1.logs &
+nohup java -javaagent:/home/ldumay/monitor-agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=jpetstore_2 -Delastic.apm.server_url='http://172.16.202.151:8200' -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
 ./monitor/elasticsearch-7.16.3/bin/elasticsearch > monitor/logs/elasticsearch.logs &
 ./monitor/kibana-7.16.3-linux-x86_64/bin/kibana > monitor/logs/kibana.logs &
-./monitor/apm-server-7.16.3-linux-x86_64/apm-server > monitor/logs/apm_server.logs &
+./monitor/apm-server-7.16.3-linux-x86_64/apm-server -e > monitor/logs/apm_server.logs &
 ```
 
 Résultat :
@@ -615,3 +619,37 @@ Accès au applications
 - Elasticsearch : [http://172.16.202.151:9200/](http://172.16.202.151:9200/)
 - APM Serveur : [http://172.16.202.151:8200/](http://172.16.202.151:8200/)
 - Kibana : [http://172.16.202.151:5601/](http://172.16.202.151:5601/)
+
+#### Résultat de Elasticsearch
+
+```
+{
+  "name" : "ldumay-vm",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "glBwYJqCTJC-aTZxfP8GJw",
+  "version" : {
+    "number" : "7.16.3",
+    "build_flavor" : "default",
+    "build_type" : "tar",
+    "build_hash" : "4e6e4eab2297e949ec994e688dad46290d018022",
+    "build_date" : "2022-01-06T23:43:02.825887787Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.10.1",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
+#### Résultat de APM Serveur
+
+```
+
+```
+
+#### Résultat de Kibana
+
+![img](_img/012.png)
+
+> Capture de Kibana

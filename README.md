@@ -161,6 +161,7 @@ sudo systemctl restart apache2.service
 ```
 
 Configuration de Apache
+
 ```xml
 <VirtualHost *:80>
 Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED

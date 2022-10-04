@@ -33,6 +33,12 @@ OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu122.04)
 OpenJDK 64-Bit Server VM (build 11.0.16+8-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)
 ```
 
+### 1.3 - Si Ubuntu en VM - Configuration réseau
+
+![img](_img/003.png)
+
+Sélectionné le nom de la carte réseau principal de la machine utilisant VirtualBox (ou VMWare ... ou ce que tu veux 😉 )
+
 ## 2 - TP - 1 - Installation d'une application Java JEE
 
 ### 2.1 - Clone & Run
@@ -120,7 +126,7 @@ spring.datasource.url=jdbc:hsqldb:file:false
 
 **----------------[EN COURS - NON TESTER]----------------**
 
-Compilation en jar
+Compilation chaque projet en jar
 
 ```
 ./mvnw clean package -DskipTests=true
@@ -133,11 +139,16 @@ nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAP
 
 ### 3.2 - LoadBalancer
 
+Installer Apache
+
 ```
+sudo apt install apache2
 sudo systemctl enable apache2
 sudo systemctl start apache2.service
 sudo systemctl status apache2.service
 ```
+
+Activer le service de Proxy
 
 ```
 sudo a2enmod proxy

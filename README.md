@@ -26,7 +26,16 @@ L'application de démonstration utilisé est disponible ici : [github - mybatis-
     - [3.5 - Lecture des logs de apache](#3-5)
     - [3.6 - Lecture des logs des applications](#3-6)
     - [3.7 - Accessibilité](#3-7)
-- [4 - TP - 2 - ](#4)
+- [4 - TP - 2 - Supervision / Monitoring](#4)
+    - [4.1 - Téléchargement des applications de monitoring](#4-1)
+    - [4.2 - Préparation des applications de monitoring](#4-2)
+    - [4.3 - Configuration de Elasticsearch](#4-3)
+    - [4.4 - Configuration de Kibana](#4-4)
+    - [4.5 - Configuration de APM Serveur](#4-5)
+    - [4.6 - Configrutation de **systctl.conf**](#4-6)
+    - [4.7 - Rechargher la configuration](#4-7)
+    - [4.8 - Test des applications](#4-8)
+- [🚀 - Démarrage de toutes les applications](#full)
 
 ## 1 - Pré-requis - [Haut de page](#top) <a name="1"></a>
 
@@ -374,7 +383,9 @@ Pour le fermer, faite `CTRL`+ `C`.
 
 Le service est donc acessible à l'adresse du serveur, ici [http://172.16.202.151](http://172.16.202.151), qui va lui même se charger de redirriger vers l'appplication **jpetstore_1 / port:8081** ou **jpetstore_2 / port:8081**.
 
-## 4 - TP - 2 -  - [Haut de page](#top) <a name="4"></a>
+## 4 - TP - 2 - Supervision / Monitoring - [Haut de page](#top) <a name="4"></a>
+
+### 4.1 - Téléchargement des applications de monitoring - [Haut de page](#top) <a name="4-1"></a>
 
 Créer un dossier de téléchagement temporaire.
 
@@ -383,29 +394,31 @@ mkdir dl
 cd dl
 ```
 
-Elasticsearch : 
+Téléchargement de Elasticsearch : 
 
 ```
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3-linux-x86_64.tar.gz
 ```
 
-Kibana : 
+Téléchargement de Kibana : 
 
 ```
 wget https://artifacts.elastic.co/downloads/kibana/kibana-7.16.3-linux-x86_64.tar.gz
 ```
 
-APM Server :
+Téléchargement de APM Server :
 
 ```
 wget https://artifacts.elastic.co/downloads/apm-server/apm-server-7.16.3-linux-x86_64.tar.gz
 ```
 
-APM Agent : 
+Téléchargement de APM Agent : 
 ```
 wget https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.29.0/elastic-apm-agent-1.29.0.jar
 mv 'remotecontent?filepath=co%2Felastic%2Fapm%2Felastic-apm-agent%2F1.29.0%2Felastic-apm-agent-1.29.0.jar' elastic-apm-agent-1.29.0.jar
 ```
+
+### 4.2 - Préparation des applications de monitoring - [Haut de page](#top) <a name="4-2"></a>
 
 Décompression des fichiers :
 
@@ -437,7 +450,7 @@ total 9216
 1054390 drwxrwxr-x 10 ldumay ldumay    4096 oct.   4 15:03 kibana-7.16.3-linux-x86_64
 ```
 
-Petit retrie des applications et de l'agent de monitoring dans 2 dossiers distincts :
+Petit re-tri des applications et de l'agent de monitoring dans 2 dossiers distincts :
 
 - dossier des applications de monitoring : `monitor`
 - dossier des agents de monitoring : `monitor-agents`
@@ -462,7 +475,7 @@ ldumay@ldumay-vm:~$ ls monitor-agents/
 elastic-apm-agent-1.29.0.jar
 ```
 
-Configuration de Elasticsearch
+### 4.3 - Configuration de Elasticsearch - [Haut de page](#top) <a name="4-3"></a>
 
 ```
 sudo nano monitor/elasticsearch-7.16.3/config/elasticsearch.yml
@@ -476,7 +489,7 @@ Résultat
 > - `network.host: 172.16.202.151`
 > - `discovery.type: single-node`
 
-Configuration de Kibana
+### 4.4 - Configuration de Kibana - [Haut de page](#top) <a name="4-4"></a>
 
 ```
 sudo nano monitor/kibana-7.16.3-linux-x86_64/config/kibana.yml
@@ -490,8 +503,7 @@ Résultat
 > - `server.host: 0.0.0.0`
 > - `elasticsearch.hosts: http://172.16.202.151:9200/`
 
-
-Configuration de APM Serveur
+### 4.5 - Configuration de APM Serveur - [Haut de page](#top) <a name="4-5"></a>
 
 ```
 sudo nano monitor/apm-server-7.16.3-linux-x86_64/apm-server.yml
@@ -507,7 +519,7 @@ Résultat
 > - `host: 0.0.0.0:8200`
 > - `hosts: 172.16.202.151:9200`
 
-Configuration de `systctl.conf`
+### 4.6 - Configuration de **systctl.conf** - [Haut de page](#top) <a name="4-6"></a>
 
 ```
 sudo nano /etc/sysctl.conf
@@ -526,7 +538,7 @@ sudo nano /etc/sysctl.conf
 > systctl -w vm.max_map_count = 262144
 > ```
 
-Rechargher la configuration
+### 4.7 - Rechargher la configuration - [Haut de page](#top) <a name="4-7"></a>
 
 ```
 sudo sysctl -p
@@ -554,21 +566,30 @@ monitor/logs/
 0 directories, 3 files
 ```
 
-Démarrage des applications :
+### 4.8 - Test des applications - [Haut de page](#top) <a name="4-8"></a>
+
+Test de elasticsearch :
 
 ```
 cd monitor/elasticsearch-7.16.3/
-./bin/elasticsearch > monitor/logs/elasticsearch.logs &
-
-cd ../kibana-7.16.3-linux-x86_64/
-./bin/kibana > monitor/logs/kibana.logs &
-
-cd ../apm-server-7.16.3-linux-x86_64/
-./apm-server -e > monitor/logs/apm_server.logs &
-
+./bin/elasticsearch
 ```
 
----
+Test de kibana :
+
+```
+cd monitor/kibana-7.16.3-linux-x86_64/
+./bin/kibana
+```
+
+Test de apm-server :
+
+```
+cd monitor/apm-server-7.16.3-linux-x86_64/
+./apm-server -e
+```
+
+### 🚀 - Démarrage de toutes les applications - [Haut de page](#top) <a name="full"></a>
 
 ```
 nohup java -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_1.logs &
@@ -578,8 +599,19 @@ nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAP
 ./monitor/apm-server-7.16.3-linux-x86_64/apm-server > monitor/logs/apm_server.logs &
 ```
 
+Résultat :
+
+```
 [1] 2746
 [2] 2747
 [3] 2835
 [4] 3074
 [5] 3075
+```
+
+Accès au applications
+
+- JPetStore : [http://172.16.202.151/](http://172.16.202.151/)
+- Elasticsearch : [http://172.16.202.151:9200/](http://172.16.202.151:9200/)
+- APM Serveur : [http://172.16.202.151:8200/](http://172.16.202.151:8200/)
+- Kibana : [http://172.16.202.151:5601/](http://172.16.202.151:5601/)

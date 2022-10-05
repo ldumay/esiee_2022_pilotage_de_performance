@@ -658,3 +658,13 @@ Accès au applications
 ![img](_img/012.png)
 
 > Capture de Kibana
+
+![img](_img/013.png)
+
+![img](_img/014.png)
+
+![img](_img/015.png)
+
+![img](_img/016.png)
+
+![img](_img/017.png)

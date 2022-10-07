@@ -93,6 +93,41 @@ Déplacer dans le dossier :
 cd mybatis-spring-boot-jpetstore
 ```
 
+Vérifier que vous avez la variable JAVA_HOME de défini
+
+```
+echo $JAVA_HOME
+```
+
+Le chemin vers le dossier où est installé Java devrait s'afficher
+Dans le cas où rien n'est affiché :
+> Trouver votre installation Java
+Elle se trouve généralement dans le dossier usr
+```
+cd /usr/lib/jvm/
+ls
+```
+La commande ls vous montre les dossiers présent.
+> Garder en tête le chemin du dossier de la version de Java que vous voulez.
+
+On va maintenant ajouter Java dans la déclaration au démarrage
+```
+nano /etc/profile.d/java_home.sh
+> export JAVA_HOME={Insérer ici le chemin vers votre dossier Java}
+```
+
+Exemple :
+```
+cat /etc/profile.d/java_home.sh
+ > export JAVA_HOME=/usr/lib/jvm/java-11-openjdk_amd64
+```
+
+Il faut maintenant appliquer les changements à la console
+Vous pouvez soit redémarrer vore machine (recommandé)
+Soit utiliser `source /etc/profile/`
+-> cela appliquera à votre console les changement dans profile.d, mais dès que vous fermerez la console, les changements ne seront plus appliqués
+
+
 Démarrage du projet avec Maven :
 
 ```
@@ -101,10 +136,28 @@ Démarrage du projet avec Maven :
 
 ### 2.2 - Accés via `localhost` et `ip` - [Haut de page](#top) <a name="2-2"></a>
 
+Récupérer Votre adresse IP :
+
+```
+> ifconfig
+
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.16.202.151  netmask 255.255.255.0  broadcast 172.16.202.255
+        inet6 fe80::2dfa:f1ba:cfab:a207  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:c4:7d:a5  txqueuelen 1000  (Ethernet)
+        RX packets 544  bytes 319003 (319.0 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 246  bytes 32572 (32.5 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+Dans le reste du tutoriel, mon ip est 172.16.202.226
+Adapter les commandes qui vont suivre selon votre ip
+
 Accès par : 
 
 - [http://locahost:8080/](http://locahost:8080/)
 - [http://172.16.202.226:8080/](http://172.16.202.226:8080/)
+- [http://{Votre_IP_ici}:8080/]()
 
 Changer le port pour `8081` :
 
@@ -118,6 +171,7 @@ Accès par :
 
 - [http://locahost:8081/](http://locahost:8081/)
 - [http://172.16.202.226:8081/](http://172.16.202.226:8081/)
+- [http://{Votre_IP_ici}:8081/]()
 
 ## 3 - TP - 2 - Partie 1 - Configuration de 2 JPetStore avec LoadBalancer - [Haut de page](#top) <a name="3"></a>
 
@@ -192,6 +246,13 @@ sudo a2enmod proxy_balancer
 sudo a2enmod headers
 sudo a2enmod lbmethod_byrequests
 sudo systemctl restart apache2.service
+```
+
+ou en 2 lignes :
+
+```
+sudo a2enmod proxy proxy_http proxy_balancer headers lbmethod_byrequests
+sudo systemctl restart apache2
 ```
 
 #### 3.2.2 - Configuration de Apache - [Haut de page](#top) <a name="3-2-2"></a>
@@ -456,7 +517,7 @@ Petit re-tri des applications et de l'agent de monitoring dans 2 dossiers distin
 - dossier des agents de monitoring : `monitor-agents`
 
 ```
-cd ../
+cd ~
 mkdir monitor
 mkdir monitor-agents
 mv dl/apm-server-7.16.3-linux-x86_64/ monitor/apm-server-7.16.3-linux-x86_64/

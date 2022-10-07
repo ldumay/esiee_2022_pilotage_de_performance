@@ -85,6 +85,26 @@ cp -r Dl/mybatis-spring-boot-jpetstore/ JPetStore_Infra/apps/jpetstore_1
 cp -r Dl/mybatis-spring-boot-jpetstore/ JPetStore_Infra/apps/jpetstore_2
 ```
 
+On a donc les dossiers :
+
+```
+ls JPetStore_Infra/apps
+ls JPetStore_Infra/agents
+ls JPetStore_Infra/logs
+ls JPetStore_Infra/monitors
+ls JPetStore_Infra/proxy
+```
+
+Ils contiennent :
+
+```
+apps      ==>    jpetstore_1  jpetstore_2
+agents    ==>    elastic-apm-agent-1.29.0.jar
+logs      ==>    jpetstore_1.logs  jpetstore_2.logs
+monitors  ==>    apm-server-7.16.3-linux-x86_64  elasticsearch-7.16.3  kibana-7.16.3-linux-x86_64
+proxy     ==>    sproxy-1.02
+```
+
 Déplacement des applications dans les dossiers respectifs :
 
 ```

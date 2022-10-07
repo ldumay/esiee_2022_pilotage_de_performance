@@ -1,3 +1,15 @@
+# SPEED RUN PROJET
+
+[Retour Accueil](../../)
+
+---
+
+But : créer le projet rapidement de A à Z depuis un Ubuntu vierge.
+
+> `COPIER` => `COLLER`
+
+---
+
 Mise à jour et installation des essentiels :
 
 - Git

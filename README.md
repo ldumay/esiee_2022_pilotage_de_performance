@@ -544,7 +544,7 @@ sudo nano /etc/sysctl.conf
 sudo sysctl -p
 ```
 
-Créationd des fichiers de logs pour les applications :
+Création des fichiers de logs pour les applications :
 
 ```
 mkdir monitor/logs

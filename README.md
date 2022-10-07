@@ -36,6 +36,12 @@ L'application de démonstration utilisé est disponible ici : [github - mybatis-
     - [4.7 - Rechargher la configuration](#4-7)
     - [4.8 - Test des applications](#4-8)
 - [🚀 - Démarrage de toutes les applications](#full)
+- [5 - TP - 3 - Lab Tests](#5)
+  - [5.1 - Installation de Siege](#5-1)
+  - [5.2 - Installation de Sproxy](#5-2)
+  - [5.3 - Lancement de SProxy](#5-3)
+  - [5.4 - Prépararer SProxy pour Siège](#5-4)
+  - [5.5 - Tests Siège](#5-5)
 
 ## 1 - Pré-requis - [Haut de page](#top) <a name="1"></a>
 
@@ -796,13 +802,13 @@ Vous pouvez arréter le `SProxy` avec `CTRL` + `C`.
 
 ### 5.4 - Prépararer SProxy pour Siège [Haut de page](#top) <a name="5-4"></a>
 
-Lancer 
+Lancer un SProxy
 
 ```
 sproxy -o ./urls.txt
 ```
 
-Lancer dans un autre terminal
+Lancer dans un autre terminal une lecture du service cible `172.16.202.151`.
 
 ```
 wget -r -o verbose.txt -l 0 -t 1 --spider -w 1 -e robots=on -e "http_proxy=http://127.0.0.1:9001" "http://172.16.202.151:80/"
@@ -923,7 +929,7 @@ http://172.16.202.151/login
 http://172.16.202.151/robots.txt
 ```
 
-### 5.5 - Siège [Haut de page](#top) <a name="5-5"></a>
+### 5.5 - Tests Siège [Haut de page](#top) <a name="5-5"></a>
 
 ```
 siege -v -c 100 -i -t 3M -f urls.txt
@@ -949,4 +955,12 @@ Résultat
 	"longest_transaction":		        1.87,
 	"shortest_transaction":		        0.00
 }
+```
+
+```
+siege -v -c 200 -i -t 5M -f urls.txt
+```
+
+```
+siege -v -c 400 -i -t 10M -f urls.txt
 ```

@@ -26,7 +26,7 @@ L'application de démonstration utilisé est disponible ici : [github - mybatis-
     - [3.5 - Lecture des logs de apache](#3-5)
     - [3.6 - Lecture des logs des applications](#3-6)
     - [3.7 - Accessibilité](#3-7)
-- [4 - TP - 2 - Supervision / Monitoring](#4)
+- [4 - TP - 3 - Supervision / Monitoring](#4)
     - [4.1 - Téléchargement des applications de monitoring](#4-1)
     - [4.2 - Préparation des applications de monitoring](#4-2)
     - [4.3 - Configuration de Elasticsearch](#4-3)
@@ -119,7 +119,7 @@ Accès par :
 - [http://locahost:8081/](http://locahost:8081/)
 - [http://172.16.202.226:8081/](http://172.16.202.226:8081/)
 
-## 3 - TP - 2 - Configuration de 2 JPetStore avec LoadBalancer - [Haut de page](#top) <a name="3"></a>
+## 3 - TP - 3 - Configuration de 2 JPetStore avec LoadBalancer - [Haut de page](#top) <a name="3"></a>
 
 ### 3.1 - Configuration de 2 JPetStore - [Haut de page](#top) <a name="3-1"></a>
 

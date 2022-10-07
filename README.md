@@ -735,3 +735,40 @@ Accès au applications
 ![img](_img/019.png)
 
 ![img](_img/020.png)
+
+#### Autres
+
+#### Kill processus
+
+```
+kill 2320
+kill 2321
+kill 2322
+kill 2323
+```
+
+## 5 - TP - 3 - Lab Tests - [Haut de page](#top) <a name="5"></a>
+
+### 5.1 - Install Siege - [Haut de page](#top) <a name="5-1"></a>
+
+```
+sudo apt install siege
+```
+
+### 5.2 - Install Dépendances [Haut de page](#top) <a name="5-2"></a>
+
+```
+sudo apt install build-essential libnet-ssleay-perl liburi-perl libwww-perl
+cd dl
+wget https://download.joedog.org/sproxy/sproxy-latest.tar.gz
+cd
+mkdir sproxy
+tar -zxf dl/sproxy-latest.tar.gz --strip-components=1 --directory="sproxy"
+sudo rm -r dl/sproxy-latest.tar.gz
+cd sproxy
+./configure
+make
+make install
+cd ~
+sproxy -v
+```

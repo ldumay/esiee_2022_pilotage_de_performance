@@ -773,7 +773,7 @@ make install
 
 ### 5.3 - Lancement de SProxy [Haut de page](#top) <a name="5-3"></a>
 
-Lancer
+Lancer un termnial SProxy :
 
 ```
 cd ~
@@ -788,19 +788,13 @@ ldumay@ldumay-vm:~$ sproxy -v
 SPROXY v1.02 listening on port 9001
 ...appending HTTP requests to: /home/ldumay/urls.txt
 ...default connection timeout: 120 seconds
-^C
 ```
 
-Vérification du fichier des url :
+> Un fichier `urls.txt ` est créé et il es vérifiable avec `cat urls.txt`.
 
-```
-ldumay@ldumay-vm:~$ cat urls.txt 
-ldumay@ldumay-vm:~$ 
-```
+Vous pouvez arréter le `SProxy` avec `CTRL` + `C`.
 
-> Le fichier est vide.
-
-### 5.4 -  [Haut de page](#top) <a name="5-4"></a>
+### 5.4 - Prépararer SProxy pour Siège [Haut de page](#top) <a name="5-4"></a>
 
 Lancer 
 
@@ -811,8 +805,10 @@ sproxy -o ./urls.txt
 Lancer dans un autre terminal
 
 ```
-wget -r -o verbose.txt -l 0 -t 1 --spider -w 1 -e robots=on -e "http_proxy=http://127.0.0.1:9001" "http://172.16.202.151:8080/"
+wget -r -o verbose.txt -l 0 -t 1 --spider -w 1 -e robots=on -e "http_proxy=http://127.0.0.1:9001" "http://172.16.202.151:80/"
 ```
+
+Attendre ... 😉
 
 Une fois wget fini de récupérer les URL, Ctrl+C dans la terminal de sproxy
 
@@ -822,6 +818,113 @@ Nettoyer le fichier produit
 sort -u -o urls.txt urls.txt
 ```
 
+Vérifier le fichier `urls.txt `, il devrais stocker tout les urls du site jpetstore.
+
+```
+cat urls.txt 
+http://172.16.202.151/
+http://172.16.202.151/accounts/create?form
+http://172.16.202.151/cart
+http://172.16.202.151/cart?add&itemId=EST-1
+http://172.16.202.151/cart?add&itemId=EST-10
+http://172.16.202.151/cart?add&itemId=EST-11
+http://172.16.202.151/cart?add&itemId=EST-12
+http://172.16.202.151/cart?add&itemId=EST-13
+http://172.16.202.151/cart?add&itemId=EST-14
+http://172.16.202.151/cart?add&itemId=EST-15
+http://172.16.202.151/cart?add&itemId=EST-16
+http://172.16.202.151/cart?add&itemId=EST-17
+http://172.16.202.151/cart?add&itemId=EST-18
+http://172.16.202.151/cart?add&itemId=EST-19
+http://172.16.202.151/cart?add&itemId=EST-2
+http://172.16.202.151/cart?add&itemId=EST-20
+http://172.16.202.151/cart?add&itemId=EST-21
+http://172.16.202.151/cart?add&itemId=EST-22
+http://172.16.202.151/cart?add&itemId=EST-23
+http://172.16.202.151/cart?add&itemId=EST-24
+http://172.16.202.151/cart?add&itemId=EST-25
+http://172.16.202.151/cart?add&itemId=EST-26
+http://172.16.202.151/cart?add&itemId=EST-27
+http://172.16.202.151/cart?add&itemId=EST-28
+http://172.16.202.151/cart?add&itemId=EST-3
+http://172.16.202.151/cart?add&itemId=EST-4
+http://172.16.202.151/cart?add&itemId=EST-5
+http://172.16.202.151/cart?add&itemId=EST-6
+http://172.16.202.151/cart?add&itemId=EST-7
+http://172.16.202.151/cart?add&itemId=EST-8
+http://172.16.202.151/cart?add&itemId=EST-9
+http://172.16.202.151/catalog
+http://172.16.202.151/catalog/categories/BIRDS
+http://172.16.202.151/catalog/categories/CATS
+http://172.16.202.151/catalog/categories/DOGS
+http://172.16.202.151/catalog/categories/FISH
+http://172.16.202.151/catalog/categories/REPTILES
+http://172.16.202.151/catalog/items/EST-1
+http://172.16.202.151/catalog/items/EST-10
+http://172.16.202.151/catalog/items/EST-11
+http://172.16.202.151/catalog/items/EST-12
+http://172.16.202.151/catalog/items/EST-13
+http://172.16.202.151/catalog/items/EST-14
+http://172.16.202.151/catalog/items/EST-15
+http://172.16.202.151/catalog/items/EST-16
+http://172.16.202.151/catalog/items/EST-17
+http://172.16.202.151/catalog/items/EST-18
+http://172.16.202.151/catalog/items/EST-19
+http://172.16.202.151/catalog/items/EST-2
+http://172.16.202.151/catalog/items/EST-20
+http://172.16.202.151/catalog/items/EST-21
+http://172.16.202.151/catalog/items/EST-22
+http://172.16.202.151/catalog/items/EST-23
+http://172.16.202.151/catalog/items/EST-24
+http://172.16.202.151/catalog/items/EST-25
+http://172.16.202.151/catalog/items/EST-26
+http://172.16.202.151/catalog/items/EST-27
+http://172.16.202.151/catalog/items/EST-28
+http://172.16.202.151/catalog/items/EST-3
+http://172.16.202.151/catalog/items/EST-4
+http://172.16.202.151/catalog/items/EST-5
+http://172.16.202.151/catalog/items/EST-6
+http://172.16.202.151/catalog/items/EST-7
+http://172.16.202.151/catalog/items/EST-8
+http://172.16.202.151/catalog/items/EST-9
+http://172.16.202.151/catalog/products/AV-CB-01
+http://172.16.202.151/catalog/products/AV-SB-02
+http://172.16.202.151/catalog/products/FI-FW-01
+http://172.16.202.151/catalog/products/FI-FW-02
+http://172.16.202.151/catalog/products/FI-SW-01
+http://172.16.202.151/catalog/products/FI-SW-02
+http://172.16.202.151/catalog/products/FL-DLH-02
+http://172.16.202.151/catalog/products/FL-DSH-01
+http://172.16.202.151/catalog/products/K9-BD-01
+http://172.16.202.151/catalog/products/K9-CW-01
+http://172.16.202.151/catalog/products/K9-DL-01
+http://172.16.202.151/catalog/products/K9-PO-02
+http://172.16.202.151/catalog/products/K9-RT-01
+http://172.16.202.151/catalog/products/K9-RT-02
+http://172.16.202.151/catalog/products/RP-LI-02
+http://172.16.202.151/catalog/products/RP-SN-01
+http://172.16.202.151/css/jpetstore.css
+http://172.16.202.151/help.html
+http://172.16.202.151/images/birds_icon.gif
+http://172.16.202.151/images/cart.gif
+http://172.16.202.151/images/cats_icon.gif
+http://172.16.202.151/images/dogs_icon.gif
+http://172.16.202.151/images/fish_icon.gif
+http://172.16.202.151/images/logo-topbar.gif
+http://172.16.202.151/images/reptiles_icon.gif
+http://172.16.202.151/images/separator.gif
+http://172.16.202.151/images/sm_birds.gif
+http://172.16.202.151/images/sm_cats.gif
+http://172.16.202.151/images/sm_dogs.gif
+http://172.16.202.151/images/sm_fish.gif
+http://172.16.202.151/images/sm_reptiles.gif
+http://172.16.202.151/images/splash.gif
+http://172.16.202.151/login
+http://172.16.202.151/robots.txt
+```
+
+### 5.5 - Siège [Haut de page](#top) <a name="5-5"></a>
+
 ```
 siege -v -c 100 -i -t 3M -f urls.txt
 ```
@@ -829,3 +932,21 @@ siege -v -c 100 -i -t 3M -f urls.txt
 Siege va attaquer la liste des URL du site -c concurrence
 ● Avec 100 utilisateurs simultanés
 ● Pendant 3 minutes
+
+Résultat
+
+```
+{	"transactions":			      215560,
+	"availability":			      100.00,
+	"elapsed_time":			      179.69,
+	"data_transferred":		      188.40,
+	"response_time":		        0.08,
+	"transaction_rate":		     1199.62,
+	"throughput":			        1.05,
+	"concurrency":			       99.82,
+	"successful_transactions":	      215201,
+	"failed_transactions":		           0,
+	"longest_transaction":		        1.87,
+	"shortest_transaction":		        0.00
+}
+```

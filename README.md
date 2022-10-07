@@ -749,13 +749,13 @@ kill 2323
 
 ## 5 - TP - 3 - Lab Tests - [Haut de page](#top) <a name="5"></a>
 
-### 5.1 - Install Siege - [Haut de page](#top) <a name="5-1"></a>
+### 5.1 - Installation de Siege - [Haut de page](#top) <a name="5-1"></a>
 
 ```
 sudo apt install siege
 ```
 
-### 5.2 - Install Dépendances [Haut de page](#top) <a name="5-2"></a>
+### 5.2 - Installation de SProxy [Haut de page](#top) <a name="5-2"></a>
 
 ```
 sudo apt install build-essential libnet-ssleay-perl liburi-perl libwww-perl
@@ -769,6 +769,63 @@ cd sproxy
 ./configure
 make
 make install
+```
+
+### 5.3 - Lancement de SProxy [Haut de page](#top) <a name="5-3"></a>
+
+Lancer
+
+```
 cd ~
 sproxy -v
 ```
+
+Résultats :
+
+```
+ldumay@ldumay-vm:~$ cd ~
+ldumay@ldumay-vm:~$ sproxy -v
+SPROXY v1.02 listening on port 9001
+...appending HTTP requests to: /home/ldumay/urls.txt
+...default connection timeout: 120 seconds
+^C
+```
+
+Vérification du fichier des url :
+
+```
+ldumay@ldumay-vm:~$ cat urls.txt 
+ldumay@ldumay-vm:~$ 
+```
+
+> Le fichier est vide.
+
+### 5.4 -  [Haut de page](#top) <a name="5-4"></a>
+
+Lancer 
+
+```
+sproxy -o ./urls.txt
+```
+
+Lancer dans un autre terminal
+
+```
+wget -r -o verbose.txt -l 0 -t 1 --spider -w 1 -e robots=on -e "http_proxy=http://127.0.0.1:9001" "http://172.16.202.151:8080/"
+```
+
+Une fois wget fini de récupérer les URL, Ctrl+C dans la terminal de sproxy
+
+Nettoyer le fichier produit
+
+```
+sort -u -o urls.txt urls.txt
+```
+
+```
+siege -v -c 100 -i -t 3M -f urls.txt
+```
+
+Siege va attaquer la liste des URL du site -c concurrence
+● Avec 100 utilisateurs simultanés
+● Pendant 3 minutes

@@ -453,6 +453,8 @@ cd JPetStore_Infra/monitors/apm-server-7.16.3-linux-x86_64/
 
 > A vérifier si celui-ci fonctionne belle et bien correctement.
 
+![img](_img/021.png)
+
 Démarrage des services :
 
 Lancer **JPetStore N°1** et **JPetStore N°2** :

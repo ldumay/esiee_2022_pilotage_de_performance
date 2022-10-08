@@ -459,7 +459,7 @@ Lancer **JPetStore N°1** et **JPetStore N°2** :
 
 ```
 nohup java -javaagent:/home/ldumay/JPetStore_Infra/agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=JpetStore_1 -Delastic.apm.server_url='http://192.168.1.252:8200' -jar JPetStore_Infra/apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > JPetStore_Infra/logs/jpetstore_1.logs &
-nohup java -javaagent:/home/ldumay/JPetStore_Infra/agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=JpetStore_2 -Delastic.apm.server_url='http://192.168.1.252:8200' -jar JPetStore_Infra/apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > JPetStore_Infra/logs/jpetstore_1.logs &
+nohup java -javaagent:/home/ldumay/JPetStore_Infra/agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=JpetStore_2 -Delastic.apm.server_url='http://192.168.1.252:8200' -jar JPetStore_Infra/apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > JPetStore_Infra/logs/jpetstore_2.logs &
 ```
 
 Lancer **Elasticsearch**, **Kibana** puis **APM Serveur**:
@@ -520,3 +520,25 @@ Accès au applications
   "version": "7.16.3"
 }
 ```
+
+#### Résultat de Kibana
+
+![img](_img/012.png)
+
+> Capture de Kibana
+
+![img](_img/013.png)
+
+![img](_img/014.png)
+
+![img](_img/015.png)
+
+![img](_img/016.png)
+
+![img](_img/017.png)
+
+![img](_img/018.png)
+
+![img](_img/019.png)
+
+![img](_img/020.png)

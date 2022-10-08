@@ -4,7 +4,7 @@ Ce projet a été testé sur une machine virtuel **Ubuntu 22.04** sous **Virtual
 
 Le but de celui-ci est de **déployer**, **monitorer** et **tester** plusieurs applications sur un serveur.
 
-L'application de démonstration utilisé est disponible ici : [github - mybatis-spring-boot-jpetstore](https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore).
+L'application de démonstration utilisé est JPetStore, disponible ici : [github - mybatis-spring-boot-jpetstore](https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore).
 
 **NB** : Il est possible de réaliser le projet rapidement de A à Z depuis un Ubuntu vierge.
 Les commandes peuvent être direcetement `COPIER` et `COLLER` dans la console Ubuntu.
@@ -13,6 +13,12 @@ Ce projet projet a été testé sur 2 machines différentes composé :
 
 - PC 1 : i7 6800K et 32Go RAM ▶ VT-x/AMD-V et Hyper-V ✅
 - PC 2 : i7 8600 et 8Go RAM ▶ VT-x/AMD-V et Hyper-V ✅
+
+Voici un schéma de l'infrastructure à construire :
+
+![img](_schemas/Performance.png)
+
+> **NB** : Seul le firewall n'est pas mis en place.
 
 ## Sommaire
 

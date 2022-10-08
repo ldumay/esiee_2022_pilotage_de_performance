@@ -6,297 +6,375 @@ Le but de celui-ci est de **déployer**, **monitorer** et **tester** plusieurs a
 
 L'application de démonstration utilisé est disponible ici : [github - mybatis-spring-boot-jpetstore](https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore).
 
+**NB** : Il est possible de réaliser le projet rapidement de A à Z depuis un Ubuntu vierge.
+Les commandes peuvent être direcetement `COPIER` et `COLLER` dans la console Ubuntu.
+
+Ce projet projet a été testé sur 2 machines différentes composé :
+
+- PC 1 : i7 6800K et 32Go RAM ▶ VT-x/AMD-V et Hyper-V ✅
+- PC 2 : i7 8600 et 8Go RAM ▶ VT-x/AMD-V et Hyper-V ✅
+
 ## Sommaire
 
 - [1 - Pré-requis](#1)
-    - [1.1 - Mise à jour et outils utils](#1-1)
-    - [1.2 - Net Tools](#1-2)
-    - [1.3 - JDK 11](#1-3)
-    - [1.4 - Configuration réseau](#1-4)
-- [2 - TP - 1 - Installation d'une application Java JEE](#2)
-    - [2.1 - Clone & Run](#2-1)
-    - [2.2 - Accés via *localhost* et *`*ip*](#2-2)
-- [3 - TP - 2 - Partie 1 - Configuration de 2 JPetStore avec LoadBalancer](#3)
-    - [3.1 - Configuration de 2 JPetStore](#3-1)
-    - [3.2 - Préparation d'un LoadBalancer avec Apache](#3-2)
-        - [3.2.1 - Installation de Apache](#3-2-1)
-        - [3.2.2 - Configuration de Apache](#3-2-2)
-    - [3.3 - Lancement de plusieurs applications](#3-3)
-    - [3.4 - Finis - Je check 😉](#3-4)
-    - [3.5 - Lecture des logs de apache](#3-5)
-    - [3.6 - Lecture des logs des applications](#3-6)
-    - [3.7 - Accessibilité](#3-7)
-- [4 - TP - 2 - Partie 2 - Supervision / Monitoring](#4)
-    - [4.1 - Téléchargement des applications de monitoring](#4-1)
-    - [4.2 - Préparation des applications de monitoring](#4-2)
-    - [4.3 - Configuration de Elasticsearch](#4-3)
-    - [4.4 - Configuration de Kibana](#4-4)
-    - [4.5 - Configuration de APM Serveur](#4-5)
-    - [4.6 - Configrutation de **systctl.conf**](#4-6)
-    - [4.7 - Rechargher la configuration](#4-7)
-    - [4.8 - Test des applications](#4-8)
-- [🚀 - Démarrage de toutes les applications](#full)
-- [5 - TP - 3 - Lab Tests](#5)
-  - [5.1 - Installation de Siege](#5-1)
-  - [5.2 - Installation de Sproxy](#5-2)
-  - [5.3 - Lancement de SProxy](#5-3)
-  - [5.4 - Prépararer SProxy pour Siège](#5-4)
-  - [5.5 - Tests Siège](#5-5)
-- [🚀🚀🚀 - SPEED RUN PROJET](Speed_run_projet.md)
+  - [1.1 - Environnement utilisé](#1-1)
+  - [1.2 - Configuration réseau de VM sur VirtualBox](#1-2)
+- [2 - Préparation de système d'information](#2)
+  - [2.1 - Mise à jour et installation des essentiels](#2-1)
+  - [2.2 - Création des dossiers nécessaires et des fichiers de logs](#2-2)
+  - [2.3 - Téléchargement des applications nécessaires](#2-3)
+  - [2.4 - Configuration des applications JPetStore](#2-4)
+  - [2.5 - Configuration du JAVA_HOME et complication des applications JPetStore](#2-5)
+  - [2.6 - Activation et configuration de Apache avec les extensions de proxy](#2-6)
+  - [2.7 - Configuration de Elasticsearch](#2-7)
+  - [2.8 - Configuration de Kibana](#2-8)
+  - [2.9 - Configuration de APM Serveur](#2-9)
+  - [2.10 - Configuration de **systctl.conf**](#2-10)
+  - [2.11 - Test des applications](#2-11)
+  - [🚀 - 2.12 - Démarrage complet du système d'informations](#2-12)
+  - [2.13 - Accès au applications](#2-13)
+- [3 - Tests de perfomance](#3)
+  - [3.1 - Installation de SProxy](#3-1)
+  - [3.2 - Test de SProxy](#3-2)
+  - [3.3 - Prépararer SProxy pour Siège](#3-3)
+  - [🚀 - 3.4 - Tests de charge avec Siège](#3-4)
+- [4 - Bonus Ubuntu 😉](4)
+  - [4.1 - La commande `top` et `htop`](4-1)
+  - [4.2 -Tuer un processus ](4-2)
+  - [4.3 - Lecture des logs des applications JPetStore ou autre en temps réel ](4-3)
+  - [4.5 - Lecture des logs de apache ](4-5)
 
 ## 1 - Pré-requis - [Haut de page](#top) <a name="1"></a>
 
-### 1.1 - Mise à jour et outils utils - [Haut de page](#top) <a name="1-1"></a>
+### 1.1 - Environnement utilisé - [Haut de page](#top) <a name="1-1"></a>
 
-```
-sudo apt update && apt upgrade
-sudo apt install tree htop
-```
+L'ensemble de ces appliations étant groumand en fonctionnement, je recommande au minimum :
 
-### 1.2 - Net Tools - [Haut de page](#top) <a name="1-2"></a>
+- 4 cores
+- 4096 Mo de RAM
 
-```
-sudo apt install net-tools
-```
+> **ATTENTION :** La VM peut s'avérer être très gourmande si celle-ci est mal optimisé ou si la configuration de l'hôte de VirtualBox est trop faible ou trop ancienne.
 
-Permet de faire plein de chose, comme `ifconfig` 😉
+Voici un exemple de configuration recommandé sur VirtualBox avec les options à activer :
 
-![img](_img/001.png)
+> **Cocher/Activer** les fonctions avancées :
+> - **IO-APIC**
+> - **EFI**
+> - **Horloge interne en UTC**
+> 
+> ![img](_img/024.png)
 
-### 1.3 - JDK 11 - [Haut de page](#top) <a name="1-3"></a>
+> **Cocher/Activer** les fonctions avancées :
+> - **PEA/NX**
+> - **VT-x/AMD-V** - (si indisponible, vérifier que le CPU de votre PC hôte prend bien en charge cette fonctionnalité)
+> 
+> ![img](_img/025.png)
 
-```
-sudo apt install openjdk-11-jre-headless
-```
+> **Cocher/Activer** les fonctions avancées :
+> - **Hyper-V** si Windows / **KVM** si MacOS ou Linux
+> - **pagination imbriqué**
+> 
+> ![img](_img/026.png)
 
-Vérification de JDK
+> **Cocher/Activer** les fonctions avancées :
+> - **VMSVGA**
+> - **Accélaration 3D**
+> 
+> ![img](_img/027.png)
 
-```
-> java --version
-openjdk 11.0.16 2022-07-19
-OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu122.04)
-OpenJDK 64-Bit Server VM (build 11.0.16+8-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)
-```
 
-### 1.4 - Configuration réseau (Si Ubuntu en VM) - [Haut de page](#top) <a name="1-4"></a>
+> **Optimisation interne à la VM VirtualBox** : Il important de toujours installer dans la VM les **drivers** de VirtualBox via le **CD d'addition invité...**.
+> 
+> ![img](_img/028.png)
+
+### 1.2 - Configuration réseau de VM sur VirtualBox - [Haut de page](#top) <a name="1-2"></a>
+
+Le but de ce projet est de préparer un environnement de type serveur avec un **LoadBalancer** et un système de monitoring accessible sur notre réseau. Il est donc nécessaire de configurer le réseau de la VM sur le mode **accès par pont**.
 
 ![img](_img/003.png)
 
 Sélectionné le nom de la carte réseau principal de la machine utilisant VirtualBox (ou VMWare ... ou ce que tu veux 😉 )
 
-## 2 - TP - 1 - Installation d'une application Java JEE - [Haut de page](#top) <a name="2"></a>
+> Par défaut, VirtalBox sélectionne la carte réseau utilisé par le PC Hôte de VirtualBox, celle qui fournit internet en accès irecte. 
 
-### 2.1 - Clone & Run - [Haut de page](#top) <a name="2-1"></a>
+## 2 - Préparation de système d'information - [Haut de page](#top) <a name="2"></a>
 
-Cloner le projet jpetstore stocker sur git :
+### 2.1 - Mise à jour et installation des essentiels - [Haut de page](#top) <a name="2-1"></a>
+
+- Git
+- Tree
+- HTop
+- Net-Tools
+- JDK 11
+- Apache
+- Siege (et ses dépendances)
 
 ```
+sudo apt update && apt upgrade
+sudo apt install git tree htop net-tools openjdk-11-jre-headless apache2 siege build-essential libnet-ssleay-perl liburi-perl libwww-perl
+```
+
+### 2.2 - Création des dossiers nécessaires et des fichiers de logs - [Haut de page](#top) <a name="2-2"></a>
+
+Création des dossiers nécessaires :
+
+```
+mkdir JPetStore_Infra
+mkdir JPetStore_Infra/apps
+mkdir JPetStore_Infra/apps/sproxy
+mkdir JPetStore_Infra/agents
+mkdir JPetStore_Infra/logs
+mkdir JPetStore_Infra/monitors
+mkdir JPetStore_Infra/proxy
+```
+
+Création des fichiers de logs :
+
+```
+touch JPetStore_Infra/logs/jpetstore_1.logs
+touch JPetStore_Infra/logs/jpetstore_2.logs
+touch JPetStore_Infra/logs/elasticsearch.logs
+touch JPetStore_Infra/logs/kibana.logs
+touch JPetStore_Infra/logs/apm_server.logs
+```
+
+### 2.3 - Téléchargement des applications nécessaires - [Haut de page](#top) <a name="2-3"></a>
+
+Téléchargement des applications nécessaires :
+
+- App Java - **JPetStore**
+- App Java - **APM Agent**
+- Monitor - **Elasticsearch**
+- Monitor - **Kibana**
+- Monitor - **APM Server**
+- Outil de test de performance - **SProxy**
+
+```
+cd JPetStore_Infra/apps
 git clone https://github.com/kazuki43zoo/mybatis-spring-boot-jpetstore.git
+wget https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.29.0/elastic-apm-agent-1.29.0.jar
+mv 'remotecontent?filepath=co%2Felastic%2Fapm%2Felastic-apm-agent%2F1.29.0%2Felastic-apm-agent-1.29.0.jar' elastic-apm-agent-1.29.0.jar
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3-linux-x86_64.tar.gz
+wget https://artifacts.elastic.co/downloads/kibana/kibana-7.16.3-linux-x86_64.tar.gz
+wget https://artifacts.elastic.co/downloads/apm-server/apm-server-7.16.3-linux-x86_64.tar.gz
+wget https://download.joedog.org/sproxy/sproxy-latest.tar.gz
 ```
 
-Déplacer dans le dossier :
+Décompression des applications nécessaires :
 
 ```
-cd mybatis-spring-boot-jpetstore
+tar -xzvf elasticsearch-7.16.3-linux-x86_64.tar.gz
+tar -xzvf kibana-7.16.3-linux-x86_64.tar.gz
+tar -xzvf apm-server-7.16.3-linux-x86_64.tar.gz
+tar -zxf sproxy-latest.tar.gz
 ```
 
-Vérifier que vous avez la variable JAVA_HOME de défini
+Nettoyage des téléchargements :
 
 ```
-echo $JAVA_HOME
+sudo rm -r apm-server-7.16.3-linux-x86_64.tar.gz
+sudo rm -r kibana-7.16.3-linux-x86_64.tar.gz
+sudo rm -r elasticsearch-7.16.3-linux-x86_64.tar.gz
+sudo rm -r sproxy-latest.tar.gz
+sudo rm -r Dl/mybatis-spring-boot-jpetstore
 ```
 
-Le chemin vers le dossier où est installé Java devrait s'afficher
-Dans le cas où rien n'est affiché :
-> Trouver votre installation Java
-Elle se trouve généralement dans le dossier usr
-```
-cd /usr/lib/jvm/
-ls
-```
-La commande ls vous montre les dossiers présent.
-> Garder en tête le chemin du dossier de la version de Java que vous voulez.
-
-On va maintenant ajouter Java dans la déclaration au démarrage
-```
-nano /etc/profile.d/java_home.sh
-> export JAVA_HOME={Insérer ici le chemin vers votre dossier Java}
-```
-
-Exemple :
-```
-cat /etc/profile.d/java_home.sh
- > export JAVA_HOME=/usr/lib/jvm/java-11-openjdk_amd64
-```
-
-Il faut maintenant appliquer les changements à la console
-Vous pouvez soit redémarrer vore machine (recommandé)
-Soit utiliser `source /etc/profile/`
--> cela appliquera à votre console les changement dans profile.d, mais dès que vous fermerez la console, les changements ne seront plus appliqués
-
-
-Démarrage du projet avec Maven :
+Duplication de l'application JPetStore :
 
 ```
-./mvnw clean spring-boot:run
+cd
+cp -r Dl/mybatis-spring-boot-jpetstore/ JPetStore_Infra/apps/jpetstore_1
+cp -r Dl/mybatis-spring-boot-jpetstore/ JPetStore_Infra/apps/jpetstore_2
 ```
 
-### 2.2 - Accés via `localhost` et `ip` - [Haut de page](#top) <a name="2-2"></a>
-
-Récupérer Votre adresse IP :
+On a donc les dossiers :
 
 ```
-> ifconfig
-
-enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 172.16.202.151  netmask 255.255.255.0  broadcast 172.16.202.255
-        inet6 fe80::2dfa:f1ba:cfab:a207  prefixlen 64  scopeid 0x20<link>
-        ether 08:00:27:c4:7d:a5  txqueuelen 1000  (Ethernet)
-        RX packets 544  bytes 319003 (319.0 KB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 246  bytes 32572 (32.5 KB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-```
-Dans le reste du tutoriel, mon ip est 172.16.202.226
-Adapter les commandes qui vont suivre selon votre ip
-
-Accès par : 
-
-- [http://locahost:8080/](http://locahost:8080/)
-- [http://172.16.202.226:8080/](http://172.16.202.226:8080/)
-- [http://{Votre_IP_ici}:8080/]()
-
-Changer le port pour `8081` :
-
-```
-nano src/main/resources/application.properties
+ls JPetStore_Infra/apps
+ls JPetStore_Infra/agents
+ls JPetStore_Infra/logs
+ls JPetStore_Infra/monitors
+ls JPetStore_Infra/proxy
 ```
 
-![img](_img/002.png)
-
-Accès par : 
-
-- [http://locahost:8081/](http://locahost:8081/)
-- [http://172.16.202.226:8081/](http://172.16.202.226:8081/)
-- [http://{Votre_IP_ici}:8081/]()
-
-## 3 - TP - 2 - Partie 1 - Configuration de 2 JPetStore avec LoadBalancer - [Haut de page](#top) <a name="3"></a>
-
-### 3.1 - Configuration de 2 JPetStore - [Haut de page](#top) <a name="3-1"></a>
-
-1. Avoir 2 instances de JPetStore
-2. Changé les ports de chaque applications pour :
-    - JPetStore_1 : `8081`
-    - JPetStore_2 : `8082`
-
-Duplication de **jpetstore** vers **jpetstore_1** et **jpetstore_2**.
+Ils contiennent :
 
 ```
-mkdir apps
-cp -r mybatis-spring-boot-jpetstore/ apps/jpetstore_1
-cp -r mybatis-spring-boot-jpetstore/ apps/jpetstore_2
+apps      ==>    jpetstore_1  jpetstore_2
+agents    ==>    elastic-apm-agent-1.29.0.jar
+logs      ==>    jpetstore_1.logs  jpetstore_2.logs
+monitors  ==>    apm-server-7.16.3-linux-x86_64  elasticsearch-7.16.3  kibana-7.16.3-linux-x86_64
+proxy     ==>    sproxy-1.02
 ```
 
-Vérification de la création :
+Déplacement des applications dans les dossiers respectifs :
 
 ```
-ls -ali apps/
-
-total 16
-1476918 drwxrwxr-x  4 ldumay ldumay 4096 oct.   3 16:15 .
-1327599 drwxr-x--- 22 ldumay ldumay 4096 oct.   3 16:13 ..
-1477139 drwxrwxr-x  8 ldumay ldumay 4096 oct.   3 16:15 jpetstore_1
-1477158 drwxrwxr-x  8 ldumay ldumay 4096 oct.   3 16:15 jpetstore_2
+mv Dl/apm-server-7.16.3-linux-x86_64/ JPetStore_Infra/monitors/apm-server-7.16.3-linux-x86_64/
+mv Dl/elasticsearch-7.16.3/ JPetStore_Infra/monitors/elasticsearch-7.16.3/
+mv Dl/kibana-7.16.3-linux-x86_64/ JPetStore_Infra/monitors/kibana-7.16.3-linux-x86_64/
+mv Dl/elastic-apm-agent-1.29.0.jar JPetStore_Infra/agents/elastic-apm-agent-1.29.0.jar
+mv Dl/sproxy-1.02/ JPetStore_Infra/proxy/sproxy-1.02/
 ```
 
-Modification des fichiers `application.properties` por **jpetstore_1** et **jpetstore_2**.
+### 2.4 - Configuration des applications JPetStore - [Haut de page](#top) <a name="2-4"></a>
 
 ```
-nano apps/jpetstore_1/src/main/resources/application.properties
-nano apps/jpetstore_2/src/main/resources/application.properties
+nano JPetStore_Infra/apps/jpetstore_1/src/main/resources/application.properties
+nano JPetStore_Infra/apps/jpetstore_2/src/main/resources/application.properties
 ```
 
-Modifier la configuration du datasource Spring :
+Il faut ajouté un port à l'application **JPetStore N°1** et **JPetStore N°2** ainsi que désactiver la configuration **datasource**.
+Pour cela, il faut faire :
+
+- **Port** :
+  - Dans la confiiguration **JPetStore N°1** : ajouté `server.port=8081`
+  - Dans la confiiguration **JPetStore N°2** : ajouté `server.port=8082`
+- **Datasource** : 
+  - Dans la confiiguration **JPetStore N°1** : ajouté `;hsqldb.lock_file=false` à la configuration `spring.datasource` afin d'obtenir :
+▶ `spring.datasource.url=jdbc:hsqldb:file:~/db/jpetstore;hsqldb.lock_file=false`
+
+> Résultat de la configuration de **JPetStore N°1** :
+> 
+> ![img](_img/002.png)
+> 
+> Faites pareil avec **JPetStore N°2**
+
+### 2.5 - Configuration du JAVA_HOME et complication des applications JPetStore - [Haut de page](#top) <a name="2-5"></a>
+
+Configuration du JAVA_HOME :
 
 ```
-spring.datasource.url=jdbc:hsqldb:file:~/db/jpetstore;hsqldb.lock_file=false
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ```
 
-Compiler chaque projet en jar :
+> Vérifier la bonne configuration :
+>
+> ```
+> echo $JAVA_HOME
+> ```
+>
+> *Résultat*
+>
+> ```
+> /usr/lib/jvm/java-11-openjdk-amd64
+> ```
+
+Complication des applications **JPetStore N°1** et **JPetStore N°2**  :
+
+- JPetStore 1 :
 
 ```
-cd apps/jpetstore_1/
+cd
+cd JPetStore_Infra/apps/jpetstore_1/
 ./mvnw clean package -DskipTests=true
 ```
 
-> Ramplacer `jpetstore_1` par le dossier de l'application cible.
-
-### 3.2 - Préparation d'un LoadBalancer avec Apache - [Haut de page](#top) <a name="3-2"></a>
-
-#### 3.2.1 - Installation de Apache - [Haut de page](#top) <a name="3-2-1"></a>
-
-Installer Apache :
+- JPetStore 2 :
 
 ```
-sudo apt install apache2
+cd
+cd JPetStore_Infra/apps/jpetstore_2/
+./mvnw clean package -DskipTests=true
+```
+
+> Attendre la fin de la compilation de chaque :
+> 
+> ```
+> [INFO] Replacing main artifact with repackaged archive
+> [INFO] ------------------------------------------------------------------------
+> [INFO] BUILD SUCCESS
+> [INFO] ------------------------------------------------------------------------
+> [INFO] Total time:  11:54 min
+> [INFO] Finished at: 2022-10-07T23:22:51+02:00
+> [INFO] ------------------------------------------------------------------------
+> ```
+
+Vérification des compilation des applications **JPetStore N°1** et **JPetStore N°2** 
+
+JPetStore 1 et 2 :
+
+```
+cd
+ls JPetStore_Infra/apps/jpetstore_1/target/
+cd
+ls JPetStore_Infra/apps/jpetstore_2/target/
+```
+
+Résultat de chaque dossier : 
+
+```
+classes                 maven-status
+generated-sources       mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar
+generated-test-sources  mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar.original
+maven-archiver          test-classes
+```
+
+> Si le **jar** `mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar` existe, la compilation s'est bien passée.
+
+### 2.6 - Activation et configuration de Apache avec les extensions de proxy - [Haut de page](#top) <a name="2-6"></a>
+
+Activation de Apache :
+
+```
 sudo systemctl enable apache2
 sudo systemctl start apache2.service
 sudo systemctl status apache2.service
 ```
 
-Activer le service de Proxy :
+Résultat :
 
 ```
-sudo a2enmod proxy
-sudo a2enmod proxy_http
-sudo a2enmod proxy_balancer
-sudo a2enmod headers
-sudo a2enmod lbmethod_byrequests
-sudo systemctl restart apache2.service
+ynchronizing state of apache2.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable apache2
+● apache2.service - The Apache HTTP Server
+     Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2022-10-08 09:11:34 CEST; 5min ago
+       Docs: https://httpd.apache.org/docs/2.4/
+   Main PID: 752 (apache2)
+      Tasks: 55 (limit: 7022)
+     Memory: 8.5M
+        CPU: 390ms
+     CGroup: /system.slice/apache2.service
+             ├─752 /usr/sbin/apache2 -k start
+             ├─753 /usr/sbin/apache2 -k start
+             └─754 /usr/sbin/apache2 -k start
+oct. 08 09:11:33 ldumay-VirtualBox systemd[1]: Starting The Apache HTTP Server...
+oct. 08 09:11:34 ldumay-VirtualBox apachectl[722]: AH00558: apache2: Could not reliably determine the server'>
+oct. 08 09:11:34 ldumay-VirtualBox systemd[1]: Started The Apache HTTP Server.
 ```
 
-ou en 2 lignes :
+Activer les extensions de proxy :
 
 ```
 sudo a2enmod proxy proxy_http proxy_balancer headers lbmethod_byrequests
 sudo systemctl restart apache2
 ```
 
-#### 3.2.2 - Configuration de Apache - [Haut de page](#top) <a name="3-2-2"></a>
-
-Récupérer l'ip de la machine :
+On récupère l'ip de la machine :
 
 ```
-> ifconfig
-
-enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 172.16.202.151  netmask 255.255.255.0  broadcast 172.16.202.255
-        inet6 fe80::2dfa:f1ba:cfab:a207  prefixlen 64  scopeid 0x20<link>
-        ether 08:00:27:c4:7d:a5  txqueuelen 1000  (Ethernet)
-        RX packets 544  bytes 319003 (319.0 KB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 246  bytes 32572 (32.5 KB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+ifconfig
 ```
 
-Créer et éditer un fichier de configuration de **vhost** pour les application jpetstore que l'on appellera `jpetstore.conf`.
+On crée et édite un fichier de configuration de vhost pour les application jpetstore que l'on appellera jpetstore.conf.
 
 ```
 sudo nano /etc/apache2/sites-available/jpetstore.conf
 ```
 
-Ci-dessous, le contenu du ficher `jpetstore.conf`.
+Ci-dessous, le contenu du ficher jpetstore.conf.
 
-```xml
+```
 <VirtualHost *:80>
     Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
     ProxyRequests Off
     ProxyPreserveHost On
 
     <Proxy "balancer://mycluster">
-        BalancerMember "http://172.16.202.151:8081" route=1
+        BalancerMember "http://192.168.1.252:8081" route=1
                 #attention: il faut changer les IPs et vérifier les ports
-        BalancerMember "http://172.16.202.151:8082" route=2
+        BalancerMember "http://192.168.1.252:8082" route=2
         ProxySet stickysession=ROUTEID
     </Proxy>
 
@@ -332,7 +410,7 @@ Désactiver la configuration par défaut de apache :
 
 ```
 sudo a2dissite
-Your choices are: 000-default jpetstore
+Your choices are: 000-default
 Which site(s) do you want to disable (wildcards ok)?
 000-default
 Site 000-default disabled.
@@ -345,7 +423,6 @@ Activer la configuration `jpetstore.conf`.
 
 ```
 sudo a2ensite
-
 Your choices are: 000-default default-ssl jpetstore
 Which site(s) do you want to enable (wildcards ok)?
 jpetstore
@@ -362,191 +439,10 @@ Redémarrer apache.
 systemctl reload apache2
 ```
 
-
-### 3.3 - Lancement de plusieurs applications - [Haut de page](#top) <a name="3-3"></a>
-
-Préparer les fichiers de logs des applications.
+### 2.7 - Configuration de Elasticsearch - [Haut de page](#top) <a name="2-7"></a>
 
 ```
-mkdir apps/logs/
-touch apps/logs/jpetstore_1.logs
-touch apps/logs/jpetstore_2.logs
-tree apps/logs/
-```
-
-Résultat : 
-
-```
-apps/logs/
-├── jpetstore_1.logs
-└── jpetstore_2.logs
-
-0 directories, 2 files
-```
-
-Lancer chaque applications indépendemment.
-
-Effecuté la commande ci-dessous pour lancer une 1ère application indépendante.
-
-```
-nohup java -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_1.logs &
-```
-
-Résultat :
-
-```
-[1] 2444
-ldumay@ldumay-vm:~$ nohup: entrée ignorée et sortie d'erreur standard redirigée vers la sortie standard
-```
-
-L'application est lancé et les logs de celle-ci sont enregistré dans le fichier `jpetstore_1.logs`. Faite ensuite `CTRL` + `C` pour reprendre la main sur la console. Bien sûr, le nouveau processus `[1] 2444` n'est pas arreté.
-
-Résultat :
-
-```
-^C
-ldumay@ldumay-vm:~$
-```
-
-Refaite la même chose pour la 2e applications.
-
-> Je sympas, voilà commande pour jpetstore_2 :
-> 
-> ```
-> nohup java -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
-> ```
-
-### 3.4 - Finis - Je check 😉 - [Haut de page](#top) <a name="3-4"></a>
-
-Normalement, si tout est **OK**, il devrais avoir 2 instance java actifs. Pour vérifier, faite la commande `top`. Celle-ci ouvre le monteur d'acivité en console. Pour le fermer, faite `CTRL`+ `C`.
-
-![img](_img/004.png)
-
-> Sur la capture, les 2 applications java sont d'ids **2444** et **3538**.
-
-### 3.5 - Lecture des logs de apache - [Haut de page](#top) <a name="3-5"></a>
-
-Pour lire les logs de apache.
-
-```
-cat /var/log/apache2/error.log
-cat /var/log/apache2/access.log
-```
-
-### 3.6 - Lecture des logs des applications - [Haut de page](#top) <a name="3-6"></a>
-
-Pour lire les logs de chaque applications en temps réel, faite : 
-
-```
-tail -f apps/logs/jpetstore_1.logs
-
-OU
-
-tail -f apps/logs/jpetstore_2.logs
-```
-
-Pour le fermer, faite `CTRL`+ `C`.
-
-### 3.7 - Accessibilité - [Haut de page](#top) <a name="3-7"></a>
-
-Le service est donc acessible à l'adresse du serveur, ici [http://172.16.202.151](http://172.16.202.151), qui va lui même se charger de redirriger vers l'appplication **jpetstore_1 / port:8081** ou **jpetstore_2 / port:8081**.
-
-## 4 - TP - 2 - Partie 2 - Supervision / Monitoring - [Haut de page](#top) <a name="4"></a>
-
-### 4.1 - Téléchargement des applications de monitoring - [Haut de page](#top) <a name="4-1"></a>
-
-Créer un dossier de téléchagement temporaire.
-
-```
-mkdir dl
-cd dl
-```
-
-Téléchargement de Elasticsearch : 
-
-```
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3-linux-x86_64.tar.gz
-```
-
-Téléchargement de Kibana : 
-
-```
-wget https://artifacts.elastic.co/downloads/kibana/kibana-7.16.3-linux-x86_64.tar.gz
-```
-
-Téléchargement de APM Server :
-
-```
-wget https://artifacts.elastic.co/downloads/apm-server/apm-server-7.16.3-linux-x86_64.tar.gz
-```
-
-Téléchargement de APM Agent : 
-```
-wget https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.29.0/elastic-apm-agent-1.29.0.jar
-mv 'remotecontent?filepath=co%2Felastic%2Fapm%2Felastic-apm-agent%2F1.29.0%2Felastic-apm-agent-1.29.0.jar' elastic-apm-agent-1.29.0.jar
-```
-
-### 4.2 - Préparation des applications de monitoring - [Haut de page](#top) <a name="4-2"></a>
-
-Décompression des fichiers :
-
-```
-tar -xzvf elasticsearch-7.16.3-linux-x86_64.tar.gz
-tar -xzvf kibana-7.16.3-linux-x86_64.tar.gz
-tar -xzvf apm-server-7.16.3-linux-x86_64.tar.gz
-```
-
-Nettoyage des fichier compresser :
-
-```
-rm -r apm-server-7.16.3-linux-x86_64.tar.gz
-rm -r kibana-7.16.3-linux-x86_64.tar.gz
-rm -r elasticsearch-7.16.3-linux-x86_64.tar.gz
-```
-
-Résultat :
-
-```
-> ls -ali
-
-total 9216
- 792723 drwxrwxr-x  5 ldumay ldumay    4096 oct.   4 15:07 .
- 412595 drwxr-x--- 22 ldumay ldumay    4096 oct.   4 14:50 ..
- 925413 drwxrwxr-x  3 ldumay ldumay    4096 oct.   4 14:59 apm-server-7.16.3-linux-x86_64
- 792740 -rw-rw-r--  1 ldumay ldumay 9414402 févr.  9  2022 elastic-apm-agent-1.29.0.jar
-1053274 drwxr-xr-x  9 ldumay ldumay    4096 janv.  7  2022 elasticsearch-7.16.3
-1054390 drwxrwxr-x 10 ldumay ldumay    4096 oct.   4 15:03 kibana-7.16.3-linux-x86_64
-```
-
-Petit re-tri des applications et de l'agent de monitoring dans 2 dossiers distincts :
-
-- dossier des applications de monitoring : `monitor`
-- dossier des agents de monitoring : `monitor-agents`
-
-```
-cd ~
-mkdir monitor
-mkdir monitor-agents
-mv dl/apm-server-7.16.3-linux-x86_64/ monitor/apm-server-7.16.3-linux-x86_64/
-mv dl/elasticsearch-7.16.3/ monitor/elasticsearch-7.16.3/
-mv dl/kibana-7.16.3-linux-x86_64/ monitor/kibana-7.16.3-linux-x86_64/
-mv dl/elastic-apm-agent-1.29.0.jar monitor-agents/elastic-apm-agent-1.29.0.jar
-```
-
-Résultat :
-
-```
-ldumay@ldumay-vm:~$ ls monitor
-apm-server-7.16.3-linux-x86_64  elasticsearch-7.16.3  kibana-7.16.3-linux-x86_64
-
-ldumay@ldumay-vm:~$ ls monitor-agents/
-elastic-apm-agent-1.29.0.jar
-```
-
-### 4.3 - Configuration de Elasticsearch - [Haut de page](#top) <a name="4-3"></a>
-
-```
-sudo nano monitor/elasticsearch-7.16.3/config/elasticsearch.yml
+sudo nano JPetStore_Infra/monitors/elasticsearch-7.16.3/config/elasticsearch.yml
 ```
 
 Résultat
@@ -554,13 +450,13 @@ Résultat
 ![img](_img/007.png)
 
 > Configurer avec :
-> - `network.host: 172.16.202.151`
+> - `network.host: 192.168.1.252`
 > - `discovery.type: single-node`
 
-### 4.4 - Configuration de Kibana - [Haut de page](#top) <a name="4-4"></a>
+### 2.8 - Configuration de Kibana - [Haut de page](#top) <a name="2-8"></a>
 
 ```
-sudo nano monitor/kibana-7.16.3-linux-x86_64/config/kibana.yml
+sudo nano JPetStore_Infra/monitors/kibana-7.16.3-linux-x86_64/config/kibana.yml
 ```
 
 Résultat
@@ -569,12 +465,12 @@ Résultat
 
 > Configurer avec :
 > - `server.host: 0.0.0.0`
-> - `elasticsearch.hosts: http://172.16.202.151:9200/`
+> - `elasticsearch.hosts: http://192.168.1.252:9200/`
 
-### 4.5 - Configuration de APM Serveur - [Haut de page](#top) <a name="4-5"></a>
+### 2.9 - Configuration de APM Serveur - [Haut de page](#top) <a name="2-9"></a>
 
 ```
-sudo nano monitor/apm-server-7.16.3-linux-x86_64/apm-server.yml
+sudo nano JPetStore_Infra/monitors/apm-server-7.16.3-linux-x86_64/apm-server.yml
 ```
 
 Résultat
@@ -585,9 +481,11 @@ Résultat
 
 > Configurer avec :
 > - `host: 0.0.0.0:8200`
-> - `hosts: 172.16.202.151:9200`
+> - `hosts: 192.168.1.252:9200`
 
-### 4.6 - Configuration de **systctl.conf** - [Haut de page](#top) <a name="4-6"></a>
+### 2.10 - Configuration de **systctl.conf** - [Haut de page](#top) <a name="2-10"></a>
+
+Ajouter `vm.max_map_count=262144` au fichier `sysctl.conf` :
 
 ```
 sudo nano /etc/sysctl.conf
@@ -595,81 +493,92 @@ sudo nano /etc/sysctl.conf
 
 ![img](_img/011.png)
 
-> Configurer avec :
-> - `vm.max_map_count = 262144`
+Valider le :
 
-> NB : 
->
-> Il est possible de faire cela avec une commande :
->
-> ```
-> systctl -w vm.max_map_count = 262144
-> ```
+```
+sudo sysctl -w vm.max_map_count=262144
+```
 
-### 4.7 - Rechargher la configuration - [Haut de page](#top) <a name="4-7"></a>
+Recharghement de la configuration :
 
 ```
 sudo sysctl -p
 ```
 
-Création des fichiers de logs pour les applications :
+### 2.11 - Test des applications - [Haut de page](#top) <a name="2-11"></a>
+
+Test des applications :
+
+**JPetStore N°1**
 
 ```
-mkdir monitor/logs
-touch monitor/logs/elasticsearch.logs
-touch monitor/logs/kibana.logs
-touch monitor/logs/apm_server.logs
+java -jar JPetStore_Infra/apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar
 ```
 
-Résultat :
+**JPetStore N°2**
 
 ```
-> tree monitor/logs/
-
-monitor/logs/
-├── apm_server.logs
-├── elasticsearch.logs
-└── kibana.logs
-
-0 directories, 3 files
+java -jar JPetStore_Infra/apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar
 ```
 
-### 4.8 - Test des applications - [Haut de page](#top) <a name="4-8"></a>
-
-Test de elasticsearch :
+**Elasticsearch**
 
 ```
-cd monitor/elasticsearch-7.16.3/
-./bin/elasticsearch
+./JPetStore_Infra/monitors/elasticsearch-7.16.3/bin/elasticsearch
 ```
 
-Test de kibana :
+> - Peut être un peut long à démarrer.
+
+**Kibana**
 
 ```
-cd monitor/kibana-7.16.3-linux-x86_64/
-./bin/kibana
+./JPetStore_Infra/monitors/kibana-7.16.3-linux-x86_64/bin/kibana
 ```
 
-Test de apm-server :
+> - Dépends de Elastic search
+> - Peut être un peut long à démarrer.
+
+**APM Serveur**
 
 ```
-cd monitor/apm-server-7.16.3-linux-x86_64/
+cd JPetStore_Infra/monitors/apm-server-7.16.3-linux-x86_64/
 ./apm-server -e
 ```
 
-### 🚀 - Démarrage de toutes les applications - [Haut de page](#top) <a name="full"></a>
+> **Voici un exmple de démarrage** :
+> 
+> ![img](_img/021.png)
 
-Pour être sûr, redémarrer ubuntu afin de lâcher (éteindre) chaque toutes applications génantes.
+### 2.12 - Démarrage complet du système d'informations - [Haut de page](#top) <a name="2-12"></a>
 
-On va démarrer les **jpetstore 1 et 2**, **elasticsearch**, **kibana** et **apm-server**.
+Démarrage des applications **JPetStore N°1** et **JPetStore N°2** :
 
 ```
-nohup java -javaagent:/home/ldumay/monitor-agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=JpetStore_1 -Delastic.apm.server_url='http://172.16.202.151:8200' -jar apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_1.logs &
-nohup java -javaagent:/home/ldumay/monitor-agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=jpetstore_2 -Delastic.apm.server_url='http://172.16.202.151:8200' -jar apps/jpetstore_2/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > apps/logs/jpetstore_2.logs &
-./monitor/elasticsearch-7.16.3/bin/elasticsearch > monitor/logs/elasticsearch.logs &
-./monitor/kibana-7.16.3-linux-x86_64/bin/kibana > monitor/logs/kibana.logs &
-./monitor/apm-server-7.16.3-linux-x86_64/apm-server -e > monitor/logs/apm_server.logs &
+nohup java -javaagent:/home/ldumay/JPetStore_Infra/agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=JpetStore_1 -Delastic.apm.server_url='http://192.168.1.252:8200' -jar JPetStore_Infra/apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > JPetStore_Infra/logs/jpetstore_1.logs &
+nohup java -javaagent:/home/ldumay/JPetStore_Infra/agents/elastic-apm-agent-1.29.0.jar -Delastic.apm.service_name=JpetStore_2 -Delastic.apm.server_url='http://192.168.1.252:8200' -jar JPetStore_Infra/apps/jpetstore_1/target/mybatis-spring-boot-jpetstore-2.0.0-SNAPSHOT.jar > JPetStore_Infra/logs/jpetstore_2.logs &
 ```
+
+Démarrage des applications **Elasticsearch**, puis de **Kibana** :
+
+```
+./JPetStore_Infra/monitors/elasticsearch-7.16.3/bin/elasticsearch > JPetStore_Infra/logs/elasticsearch.logs &
+./JPetStore_Infra/monitors/kibana-7.16.3-linux-x86_64/bin/kibana > JPetStore_Infra/logs/kibana.logs &
+```
+
+Démarrage de l'application **APM Serveur** :
+
+```
+cd JPetStore_Infra/monitors/apm-server-7.16.3-linux-x86_64/
+./apm-server -e
+```
+
+> Etant un peu capricieuse, il est recommandé de démarrer l'application dans son dossier propre et de laisser le terminal ouvert.
+> 
+> L'idéal serait de démarrer l'application de manière indépendante mais cela ne fonctionne pas pour le moment avec la requète ci-dessous.
+> 
+> ```
+> ./JPetStore_Infra/monitors/apm-server-7.16.3-linux-x86_64/apm-server -e > JPetStore_Infra/logs/apm_server.logs &
+> ```
 
 Résultat :
 
@@ -681,12 +590,20 @@ Résultat :
 [5] 3075
 ```
 
-Accès au applications
+### 2.13 - Accès au applications - [Haut de page](#top) <a name="2-13"></a>
 
-- JPetStore : [http://172.16.202.151/](http://172.16.202.151/)
-- Elasticsearch : [http://172.16.202.151:9200/](http://172.16.202.151:9200/)
-- APM Serveur : [http://172.16.202.151:8200/](http://172.16.202.151:8200/)
-- Kibana : [http://172.16.202.151:5601/](http://172.16.202.151:5601/)
+- JPetStore *(par LoadBalancer)* : [http://192.168.1.252/](http://192.168.1.252/) - *Affiche la page web de l'application JPetStore choisi par le LoadBalancer de Apache et **disponible***.
+  - JPetStore *(par port direct 8081)* : [http://192.168.1.252:8081/](http://192.168.1.252:8081/) - *Affiche la page web de l'application JPetStore sur le port 8081*.
+  - JPetStore *(par port direct 8082)* : [http://192.168.1.252:8082/](http://192.168.1.252:8082/) - *Affiche la page web de l'application JPetStore sur le port 8082*.
+- Elasticsearch : [http://192.168.1.252:9200/](http://192.168.1.252:9200/) - *Affiche la page web API de l'application Elasticsearch sur le port 9200*.
+- APM Serveur : [http://192.168.1.252:8200/](http://192.168.1.252:8200/) - *Affiche la page web API de l'application APM Serveur sur le port 8200*.
+- Kibana : [http://192.168.1.252:5601/](http://192.168.1.252:5601/) - *Affiche la page web de l'application Kibana sur le port 5601*.
+
+#### Résultat de JPetStore
+
+![img](_img/022.png)
+
+![img](_img/023.png)
 
 #### Résultat de Elasticsearch
 
@@ -743,42 +660,18 @@ Accès au applications
 
 ![img](_img/020.png)
 
-#### Autres
+## 3 - Tests de perfomance - [Haut de page](#top) <a name="3"></a>
 
-#### Kill processus
-
-```
-kill 2320
-kill 2321
-kill 2322
-kill 2323
-```
-
-## 5 - TP - 3 - Lab Tests - [Haut de page](#top) <a name="5"></a>
-
-### 5.1 - Installation de Siege - [Haut de page](#top) <a name="5-1"></a>
+### 3.1 - Installation de SProxy [Haut de page](#top) <a name="3-1"></a>
 
 ```
-sudo apt install siege
-```
-
-### 5.2 - Installation de SProxy [Haut de page](#top) <a name="5-2"></a>
-
-```
-sudo apt install build-essential libnet-ssleay-perl liburi-perl libwww-perl
-cd dl
-wget https://download.joedog.org/sproxy/sproxy-latest.tar.gz
-cd
-mkdir sproxy
-tar -zxf dl/sproxy-latest.tar.gz --strip-components=1 --directory="sproxy"
-sudo rm -r dl/sproxy-latest.tar.gz
-cd sproxy
+cd JPetStore_Infra/proxy/sproxy-1.02/
 ./configure
-make
-make install
+sudo make
+sudo make install
 ```
 
-### 5.3 - Lancement de SProxy [Haut de page](#top) <a name="5-3"></a>
+### 3.2 - Test de SProxy [Haut de page](#top) <a name="3-2"></a>
 
 Lancer un termnial SProxy :
 
@@ -797,171 +690,232 @@ SPROXY v1.02 listening on port 9001
 ...default connection timeout: 120 seconds
 ```
 
-> Un fichier `urls.txt ` est créé et il es vérifiable avec `cat urls.txt`.
+SProxy fonctionne bien, on peux arréter SProxy avec `CTRL` + `C`.
 
-Vous pouvez arréter le `SProxy` avec `CTRL` + `C`.
+> Un fichier `urls.txt ` est créé et il est vérifiable avec `cat urls.txt`. Normalement il est vide.
 
-### 5.4 - Prépararer SProxy pour Siège [Haut de page](#top) <a name="5-4"></a>
+### 3.3 - Prépararer SProxy pour Siège [Haut de page](#top) <a name="3-3"></a>
 
-Lancer un SProxy
+Lancer un SProxy et laisser ce termninal ouvert :
 
 ```
 sproxy -o ./urls.txt
 ```
 
-Lancer dans un autre terminal une lecture du service cible `172.16.202.151`.
+Dans un autre terminal, lancer une lecture du service cible, ici **JPetStore**  `192.168.1.252`.
 
 ```
-wget -r -o verbose.txt -l 0 -t 1 --spider -w 1 -e robots=on -e "http_proxy=http://127.0.0.1:9001" "http://172.16.202.151:80/"
+wget -r -o verbose.txt -l 0 -t 1 --spider -w 1 -e robots=on -e "http_proxy=http://127.0.0.1:9001" "http://192.168.1.252:80/"
 ```
 
-Attendre ... 😉
+Puis **Attendre ...** 😉
 
-Une fois wget fini de récupérer les URL, Ctrl+C dans la terminal de sproxy
+Une fois que cette commande `wget` sare terminé, fermer ce terminal. Puis retourner sur le terminal SProxy précédemment ouvert pour le fermer avec `CTRL` + `C`.
 
-Nettoyer le fichier produit
+Ensuite, il faut nettoyer le fichier produit `urls.txt`
 
 ```
 sort -u -o urls.txt urls.txt
 ```
 
-Vérifier le fichier `urls.txt `, il devrais stocker tout les urls du site jpetstore.
+Il est maintenant possible de vérifier le fichier `urls.txt `, il devrais stocker toutes les traces urls effectuées sur le site **JPetStore**.
+
+> Exemple
+> 
+> ```
+> cat urls.txt 
+> http://192.168.1.2/
+> http://192.168.1.2/accounts/create?form
+> http://192.168.1.2/cart
+> http://192.168.1.2/cart?add&itemId=EST-1
+> http://192.168.1.2/cart?add&itemId=EST-10
+> http://192.168.1.2/cart?add&itemId=EST-11
+> http://192.168.1.2/cart?add&itemId=EST-12
+> http://192.168.1.2/cart?add&itemId=EST-13
+> http://192.168.1.2/cart?add&itemId=EST-14
+> http://192.168.1.2/cart?add&itemId=EST-15
+> http://192.168.1.2/cart?add&itemId=EST-16
+> http://192.168.1.2/cart?add&itemId=EST-17
+> http://192.168.1.2/cart?add&itemId=EST-18
+> http://192.168.1.2/cart?add&itemId=EST-19
+> http://192.168.1.2/cart?add&itemId=EST-2
+> http://192.168.1.2/cart?add&itemId=EST-20
+> http://192.168.1.2/cart?add&itemId=EST-21
+> http://192.168.1.2/cart?add&itemId=EST-22
+> http://192.168.1.2/cart?add&itemId=EST-23
+> http://192.168.1.2/cart?add&itemId=EST-24
+> http://192.168.1.2/cart?add&itemId=EST-25
+> http://192.168.1.2/cart?add&itemId=EST-26
+> http://192.168.1.2/cart?add&itemId=EST-27
+> http://192.168.1.2/cart?add&itemId=EST-28
+> http://192.168.1.2/cart?add&itemId=EST-3
+> http://192.168.1.2/cart?add&itemId=EST-4
+> http://192.168.1.2/cart?add&itemId=EST-5
+> http://192.168.1.2/cart?add&itemId=EST-6
+> http://192.168.1.2/cart?add&itemId=EST-7
+> http://192.168.1.2/cart?add&itemId=EST-8
+> http://192.168.1.2/cart?add&itemId=EST-9
+> http://192.168.1.2/catalog
+> http://192.168.1.2/catalog/categories/BIRDS
+> http://192.168.1.2/catalog/categories/CATS
+> http://192.168.1.2/catalog/categories/DOGS
+> http://192.168.1.2/catalog/categories/FISH
+> http://192.168.1.2/catalog/categories/REPTILES
+> http://192.168.1.2/catalog/items/EST-1
+> http://192.168.1.2/catalog/items/EST-10
+> http://192.168.1.2/catalog/items/EST-11
+> http://192.168.1.2/catalog/items/EST-12
+> http://192.168.1.2/catalog/items/EST-13
+> http://192.168.1.2/catalog/items/EST-14
+> http://192.168.1.2/catalog/items/EST-15
+> http://192.168.1.2/catalog/items/EST-16
+> http://192.168.1.2/catalog/items/EST-17
+> http://192.168.1.2/catalog/items/EST-18
+> http://192.168.1.2/catalog/items/EST-19
+> http://192.168.1.2/catalog/items/EST-2
+> http://192.168.1.2/catalog/items/EST-20
+> http://192.168.1.2/catalog/items/EST-21
+> http://192.168.1.2/catalog/items/EST-22
+> http://192.168.1.2/catalog/items/EST-23
+> http://192.168.1.2/catalog/items/EST-24
+> http://192.168.1.2/catalog/items/EST-25
+> http://192.168.1.2/catalog/items/EST-26
+> http://192.168.1.2/catalog/items/EST-27
+> http://192.168.1.2/catalog/items/EST-28
+> http://192.168.1.2/catalog/items/EST-3
+> http://192.168.1.2/catalog/items/EST-4
+> http://192.168.1.2/catalog/items/EST-5
+> http://192.168.1.2/catalog/items/EST-6
+> http://192.168.1.2/catalog/items/EST-7
+> http://192.168.1.2/catalog/items/EST-8
+> http://192.168.1.2/catalog/items/EST-9
+> http://192.168.1.2/catalog/products/AV-CB-01
+> http://192.168.1.2/catalog/products/AV-SB-02
+> http://192.168.1.2/catalog/products/FI-FW-01
+> http://192.168.1.2/catalog/products/FI-FW-02
+> http://192.168.1.2/catalog/products/FI-SW-01
+> http://192.168.1.2/catalog/products/FI-SW-02
+> http://192.168.1.2/catalog/products/FL-DLH-02
+> http://192.168.1.2/catalog/products/FL-DSH-01
+> http://192.168.1.2/catalog/products/K9-BD-01
+> http://192.168.1.2/catalog/products/K9-CW-01
+> http://192.168.1.2/catalog/products/K9-DL-01
+> http://192.168.1.2/catalog/products/K9-PO-02
+> http://192.168.1.2/catalog/products/K9-RT-01
+> http://192.168.1.2/catalog/products/K9-RT-02
+> http://192.168.1.2/catalog/products/RP-LI-02
+> http://192.168.1.2/catalog/products/RP-SN-01
+> http://192.168.1.2/css/jpetstore.css
+> http://192.168.1.2/help.html
+> http://192.168.1.2/images/birds_icon.gif
+> http://192.168.1.2/images/cart.gif
+> http://192.168.1.2/images/cats_icon.gif
+> http://192.168.1.2/images/dogs_icon.gif
+> http://192.168.1.2/images/fish_icon.gif
+> http://192.168.1.2/images/logo-topbar.gif
+> http://192.168.1.2/images/reptiles_icon.gif
+> http://192.168.1.2/images/separator.gif
+> http://192.168.1.2/images/sm_birds.gif
+> http://192.168.1.2/images/sm_cats.gif
+> http://192.168.1.2/images/sm_dogs.gif
+> http://192.168.1.2/images/sm_fish.gif
+> http://192.168.1.2/images/sm_reptiles.gif
+> http://192.168.1.2/images/splash.gif
+> http://192.168.1.2/login
+> http://192.168.1.2/robots.txt
+> ```
+
+### 3.4 - Tests de charge avec Siège [Haut de page](#top) <a name="3-4"></a>
+
+Pour tester simuler une charge sur **JPetStore** :
 
 ```
-cat urls.txt 
-http://172.16.202.151/
-http://172.16.202.151/accounts/create?form
-http://172.16.202.151/cart
-http://172.16.202.151/cart?add&itemId=EST-1
-http://172.16.202.151/cart?add&itemId=EST-10
-http://172.16.202.151/cart?add&itemId=EST-11
-http://172.16.202.151/cart?add&itemId=EST-12
-http://172.16.202.151/cart?add&itemId=EST-13
-http://172.16.202.151/cart?add&itemId=EST-14
-http://172.16.202.151/cart?add&itemId=EST-15
-http://172.16.202.151/cart?add&itemId=EST-16
-http://172.16.202.151/cart?add&itemId=EST-17
-http://172.16.202.151/cart?add&itemId=EST-18
-http://172.16.202.151/cart?add&itemId=EST-19
-http://172.16.202.151/cart?add&itemId=EST-2
-http://172.16.202.151/cart?add&itemId=EST-20
-http://172.16.202.151/cart?add&itemId=EST-21
-http://172.16.202.151/cart?add&itemId=EST-22
-http://172.16.202.151/cart?add&itemId=EST-23
-http://172.16.202.151/cart?add&itemId=EST-24
-http://172.16.202.151/cart?add&itemId=EST-25
-http://172.16.202.151/cart?add&itemId=EST-26
-http://172.16.202.151/cart?add&itemId=EST-27
-http://172.16.202.151/cart?add&itemId=EST-28
-http://172.16.202.151/cart?add&itemId=EST-3
-http://172.16.202.151/cart?add&itemId=EST-4
-http://172.16.202.151/cart?add&itemId=EST-5
-http://172.16.202.151/cart?add&itemId=EST-6
-http://172.16.202.151/cart?add&itemId=EST-7
-http://172.16.202.151/cart?add&itemId=EST-8
-http://172.16.202.151/cart?add&itemId=EST-9
-http://172.16.202.151/catalog
-http://172.16.202.151/catalog/categories/BIRDS
-http://172.16.202.151/catalog/categories/CATS
-http://172.16.202.151/catalog/categories/DOGS
-http://172.16.202.151/catalog/categories/FISH
-http://172.16.202.151/catalog/categories/REPTILES
-http://172.16.202.151/catalog/items/EST-1
-http://172.16.202.151/catalog/items/EST-10
-http://172.16.202.151/catalog/items/EST-11
-http://172.16.202.151/catalog/items/EST-12
-http://172.16.202.151/catalog/items/EST-13
-http://172.16.202.151/catalog/items/EST-14
-http://172.16.202.151/catalog/items/EST-15
-http://172.16.202.151/catalog/items/EST-16
-http://172.16.202.151/catalog/items/EST-17
-http://172.16.202.151/catalog/items/EST-18
-http://172.16.202.151/catalog/items/EST-19
-http://172.16.202.151/catalog/items/EST-2
-http://172.16.202.151/catalog/items/EST-20
-http://172.16.202.151/catalog/items/EST-21
-http://172.16.202.151/catalog/items/EST-22
-http://172.16.202.151/catalog/items/EST-23
-http://172.16.202.151/catalog/items/EST-24
-http://172.16.202.151/catalog/items/EST-25
-http://172.16.202.151/catalog/items/EST-26
-http://172.16.202.151/catalog/items/EST-27
-http://172.16.202.151/catalog/items/EST-28
-http://172.16.202.151/catalog/items/EST-3
-http://172.16.202.151/catalog/items/EST-4
-http://172.16.202.151/catalog/items/EST-5
-http://172.16.202.151/catalog/items/EST-6
-http://172.16.202.151/catalog/items/EST-7
-http://172.16.202.151/catalog/items/EST-8
-http://172.16.202.151/catalog/items/EST-9
-http://172.16.202.151/catalog/products/AV-CB-01
-http://172.16.202.151/catalog/products/AV-SB-02
-http://172.16.202.151/catalog/products/FI-FW-01
-http://172.16.202.151/catalog/products/FI-FW-02
-http://172.16.202.151/catalog/products/FI-SW-01
-http://172.16.202.151/catalog/products/FI-SW-02
-http://172.16.202.151/catalog/products/FL-DLH-02
-http://172.16.202.151/catalog/products/FL-DSH-01
-http://172.16.202.151/catalog/products/K9-BD-01
-http://172.16.202.151/catalog/products/K9-CW-01
-http://172.16.202.151/catalog/products/K9-DL-01
-http://172.16.202.151/catalog/products/K9-PO-02
-http://172.16.202.151/catalog/products/K9-RT-01
-http://172.16.202.151/catalog/products/K9-RT-02
-http://172.16.202.151/catalog/products/RP-LI-02
-http://172.16.202.151/catalog/products/RP-SN-01
-http://172.16.202.151/css/jpetstore.css
-http://172.16.202.151/help.html
-http://172.16.202.151/images/birds_icon.gif
-http://172.16.202.151/images/cart.gif
-http://172.16.202.151/images/cats_icon.gif
-http://172.16.202.151/images/dogs_icon.gif
-http://172.16.202.151/images/fish_icon.gif
-http://172.16.202.151/images/logo-topbar.gif
-http://172.16.202.151/images/reptiles_icon.gif
-http://172.16.202.151/images/separator.gif
-http://172.16.202.151/images/sm_birds.gif
-http://172.16.202.151/images/sm_cats.gif
-http://172.16.202.151/images/sm_dogs.gif
-http://172.16.202.151/images/sm_fish.gif
-http://172.16.202.151/images/sm_reptiles.gif
-http://172.16.202.151/images/splash.gif
-http://172.16.202.151/login
-http://172.16.202.151/robots.txt
-```
-
-### 5.5 - Tests Siège [Haut de page](#top) <a name="5-5"></a>
-
-```
-siege -v -c 100 -i -t 3M -f urls.txt
+siege -v -c 20 -i -t 1M -f urls.txt
 ```
 
 Siege va attaquer la liste des URL du site -c concurrence
-● Avec 100 utilisateurs simultanés
-● Pendant 3 minutes
+● Avec 20 utilisateurs simultanés
+● Pendant 1 minutes
 
 Résultat
 
 ```
-{	"transactions":			      215560,
+{	"transactions":			       10826,
 	"availability":			      100.00,
-	"elapsed_time":			      179.69,
-	"data_transferred":		      188.40,
-	"response_time":		        0.08,
-	"transaction_rate":		     1199.62,
-	"throughput":			        1.05,
-	"concurrency":			       99.82,
-	"successful_transactions":	      215201,
+	"elapsed_time":			       59.89,
+	"data_transferred":		        9.25,
+	"response_time":		        0.11,
+	"transaction_rate":		      180.76,
+	"throughput":			        0.15,
+	"concurrency":			       19.81,
+	"successful_transactions":	       10819,
 	"failed_transactions":		           0,
-	"longest_transaction":		        1.87,
+	"longest_transaction":		        1.68,
 	"shortest_transaction":		        0.00
 }
 ```
 
-```
-siege -v -c 200 -i -t 5M -f urls.txt
-```
+Il est donc possible de simuler les tests que l'on souhaite :
+
+> - Pour 200 utilisateurs pendant 5 minutes :
+> 
+> ```
+> siege -v -c 200 -i -t 5M -f urls.txt
+> ```
+> 
+> - Pour 400 utilisateurs pendant 10 minutes :
+> 
+> ```
+> siege -v -c 400 -i -t 10M -f urls.txt
+> ```
+
+
+## 4 - Bonus Ubuntu 😉- [Haut de page](#top) <a name="4"></a>
+
+### 4.1 - La commande `top` et `htop` - [Haut de page](#top) <a name="4-1"></a>
+
+Pour vérifier les processus en cours sur Ubuntu, faite la commande `top`. Celle-ci ouvre un monteur d'acivité en console. Pour le fermer, faite `CTRL`+ `C`.
+
+![img](_img/004.png)
+
+> Sur la capture, les 2 applications java d'ids **2444** et **3538** sont **JPetStore N°1** et **JPetStore N°2**.
+
+Cela est aussi possible de manière plus détaillé avec la commande `htop` qui ouvrira lui aussi un monteur d'acivité en console avec de la coloration intégrée.
+
+### 4.2 -Tuer un processus - [Haut de page](#top) <a name="4-2"></a>
+
+Pour tuer un processus, la commande est `kill <id_processus>`.
+
+Exemple :
 
 ```
-siege -v -c 400 -i -t 10M -f urls.txt
+kill 2320
+kill 2321
+kill 2322
+kill 2323
+```
+
+### 4.3 - Lecture des logs des applications JPetStore ou autre en temps réel - [Haut de page](#top) <a name="4-3"></a>
+
+Pour lire les logs de chaque application JPetStore en temps réel, faite `tail -f <path_fichier.extansion>`.
+
+Exemple :
+
+```
+tail -f JPetStore_Infra/logs/jpetstore_1.logs
+
+OU
+
+tail -f JPetStore_Infra/logs/jpetstore_2.logs
+```
+
+Pour le fermer, faite `CTRL`+ `C`.
+
+### 4.5 - Lecture des logs de apache - [Haut de page](#top) <a name="4-5"></a>
+
+Pour lire les logs de apache.
+
+```
+cat /var/log/apache2/error.log
+cat /var/log/apache2/access.log
 ```
